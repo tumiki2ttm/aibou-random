@@ -667,33 +667,56 @@ const d = [
     }
 ];
 
+// ※ const d = [...] のデータ部分はそのまま残してください！
+
 function g(){
     if(d.length === 0) return;
-    const s = d[Math.floor(Math.random() * d.length)];
-    if(!s.episodes || s.episodes.length === 0 || s.episodes[0] === "") { g(); return; }
-    const epIndex = Math.floor(Math.random() * s.episodes.length);
-    const item = s.episodes[epIndex];
     
-   
-    let epNum = epIndex + 1;
-    let title = item;
+    // 1. 全シーズンから「有効なエピソード」をすべて1つのフラットな配列に集める
+    const allEpisodes = [];
     
-    if (typeof item === 'object') {
-        epNum = item.ep;
-        title = item.t;
-    }
+    d.forEach(season => {
+        if (!season.episodes || season.episodes.length === 0) return;
+        
+        season.episodes.forEach((item, index) => {
+            if (item === "") return;
+            
+            let epNum = index + 1;
+            let title = item;
+            
+            // オブジェクト形式（シーズン3の欠番など）の対応
+            if (typeof item === 'object') {
+                epNum = item.ep;
+                title = item.t;
+            }
+            
+            // 抽選用のデータを格納
+            allEpisodes.push({
+                seasonName: season.n,
+                url: season.url,
+                epNum: epNum,
+                title: title
+            });
+        });
+    });
     
-    document.getElementById("result").innerText = `${s.n}\n第 ${epNum} 話\n『${title}』`;
+    if(allEpisodes.length === 0) return;
+    
+    // 2. 集まった全エピソードの中から、完全にフラットな確率で1つを選ぶ
+    const selected = allEpisodes[Math.floor(Math.random() * allEpisodes.length)];
+    
+    // 3. 画面に表示
+    document.getElementById("result").innerText = `${selected.seasonName}\n第 ${selected.epNum} 話\n『${selected.title}』`;
     
     const oldBtn = document.getElementById("t-btn");
     if(oldBtn) oldBtn.remove();
     
-    if(s.url && s.url !== "") {
+    if(selected.url && selected.url !== "") {
         const btn = document.createElement("button");
         btn.id = "t-btn";
-        btn.innerText = `TELASAで ${s.n} を観る ➔`;
+        btn.innerText = `TELASAで ${selected.seasonName} を観る ➔`;
         btn.style.cssText = "background: #ff6600; color: white; border: none; padding: 12px 20px; font-size: 16px; border-radius: 5px; cursor: pointer; font-weight: bold; margin-top: 15px; width: 100%;";
-        btn.onclick = function() { window.open(s.url, '_blank'); };
+        btn.onclick = function() { window.open(selected.url, '_blank'); };
         document.getElementById("result").appendChild(document.createElement("br"));
         document.getElementById("result").appendChild(btn);
     } 
@@ -702,6 +725,7 @@ function g(){
 function toggleMode() {
     document.body.classList.toggle('dark');
 }
+
 </script>
 
 (※映画、特別編、裏相棒は含みません)
