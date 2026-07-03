@@ -667,12 +667,10 @@ const d = [
     }
 ];
 
-// ※ const d = [...] のデータ部分はそのまま残してください！
-
 function g(){
     if(d.length === 0) return;
     
-    // 1. 全シーズンから「有効なエピソード」をすべて1つのフラットな配列に集める
+
     const allEpisodes = [];
     
     d.forEach(season => {
@@ -684,13 +682,13 @@ function g(){
             let epNum = index + 1;
             let title = item;
             
-            // オブジェクト形式（シーズン3の欠番など）の対応
+
             if (typeof item === 'object') {
                 epNum = item.ep;
                 title = item.t;
             }
             
-            // 抽選用のデータを格納
+
             allEpisodes.push({
                 seasonName: season.n,
                 url: season.url,
@@ -702,10 +700,9 @@ function g(){
     
     if(allEpisodes.length === 0) return;
     
-    // 2. 集まった全エピソードの中から、完全にフラットな確率で1つを選ぶ
+
     const selected = allEpisodes[Math.floor(Math.random() * allEpisodes.length)];
     
-    // 3. 画面に表示
     document.getElementById("result").innerText = `${selected.seasonName}\n第 ${selected.epNum} 話\n『${selected.title}』`;
     
     const oldBtn = document.getElementById("t-btn");
