@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>相棒ランダムガチャ</title>
-    <style>
+    <style> 
+html {
+  touch-action: manipulation;
+}
 body { font-family: sans-serif; text-align: center; background: #f4f4f9; color: #333; padding: 50px 20px; transition: background 0.3s, color 0.3s; }
 .box { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); display: inline-block; width: 100%; max-width: 650px; box-sizing: border-box; transition: background 0.3s; position: relative; }
 .controls { margin-bottom: 20px; text-align: left; }
@@ -53,7 +56,7 @@ body.dark #result { color: #ff453a; }
             <option value="yarikura">鑓鞍 兵衛</option>
         </select>
     </div>
-    <button onclick="g()">話を決める！</button>
+    <button onclick="g()">事件を決める！</button>
     <div id="result"></div>
 </div>
 
@@ -185,11 +188,15 @@ function g(){
 
     lastResult = `${selected.sn}-${selected.en}`;
 
-    resDiv.innerText = `${selected.sn}\n第 ${selected.en} 話\n『${selected.t}』`;
-    
+    // 1. 毎回、古いボタン（TELASAとX）を両方きれいに削除する
     const oldBtn = document.getElementById("t-btn");
     if(oldBtn) oldBtn.remove();
+    const oldXBtn = document.getElementById("x-btn");
+    if(oldXBtn) oldXBtn.remove();
     
+    // 改行用のbrタグが増え続けないように、結果表示のテキストをリセットした後にボタンを追加する
+    resDiv.innerText = `${selected.sn}\n第 ${selected.en} 話\n『${selected.t}』`;
+
     if(selected.url) {
         const btn = document.createElement("button");
         btn.id = "t-btn";
@@ -198,16 +205,20 @@ function g(){
         btn.onclick = () => window.open(selected.url, '_blank');
         resDiv.appendChild(document.createElement("br"));
         resDiv.appendChild(btn);
+    }
 
-const xBtn = document.createElement("button");
-xBtn.innerText = `結果をX(旧Twitter)でシェア`;
-xBtn.style.cssText = "background:#000000;color:white;border:1px solid #333;padding:12px 20px;font-size:16px;border-radius:5px;cursor:pointer;font-weight:bold;margin-top:10px;width:100%;";
-xBtn.onclick = () => {
-    const text = encodeURIComponent(`【相棒ランダムガチャ】\n\n${selected.sn} 第 ${selected.en} 話\n『${selected.t}』を引き当てました！\n\n#相棒ランダムガチャ #相棒 #aibou \n`);
-    const url = encodeURIComponent(window.location.href);
-    window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
-};
-resDiv.appendChild(xBtn);
+    // 2. XボタンはURLの有無に関わらず、毎回出す（IDを付与する）
+    const xBtn = document.createElement("button");
+    xBtn.id = "x-btn"; // IDをしっかり付与
+    xBtn.innerText = `結果をX(旧Twitter)でシェア`;
+    xBtn.style.cssText = "background:#000000;color:white;border:1px solid #333;padding:12px 20px;font-size:16px;border-radius:5px;cursor:pointer;font-weight:bold;margin-top:10px;width:100%;";
+    xBtn.onclick = () => {
+        const text = encodeURIComponent(`【相棒ランダムガチャ】\n\n${selected.sn} 第 ${selected.en} 話\n『${selected.t}』を引き当てました！\n\n#相棒ランダムガチャ #相棒 #aibou \n`);
+        const url = encodeURIComponent(window.location.href);
+        window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
+    };
+    resDiv.appendChild(document.createElement("br"));
+    resDiv.appendChild(xBtn);
 
     } 
 }
