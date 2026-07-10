@@ -203,7 +203,7 @@ const xBtn = document.createElement("button");
 xBtn.innerText = `結果をX(旧Twitter)でシェア`;
 xBtn.style.cssText = "background:#000000;color:white;border:1px solid #333;padding:12px 20px;font-size:16px;border-radius:5px;cursor:pointer;font-weight:bold;margin-top:10px;width:100%;";
 xBtn.onclick = () => {
-    const text = encodeURIComponent(`【相棒ランダムガチャ】\n\n${selected.sn} 第 ${selected.en} 話\n『${selected.t}』を引き当てました！\n\n#相棒 #aibou\n`);
+    const text = encodeURIComponent(`【相棒ランダムガチャ】\n\n${selected.sn} 第 ${selected.en} 話\n『${selected.t}』を引き当てました！\n\n#相棒ランダムガチャ #相棒 #aibou \n`);
     const url = encodeURIComponent(window.location.href);
     window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
 };
