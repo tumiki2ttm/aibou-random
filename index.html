@@ -188,13 +188,12 @@ function g(){
 
     lastResult = `${selected.sn}-${selected.en}`;
 
-    // 1. 毎回、古いボタン（TELASAとX）を両方きれいに削除する
     const oldBtn = document.getElementById("t-btn");
     if(oldBtn) oldBtn.remove();
     const oldXBtn = document.getElementById("x-btn");
     if(oldXBtn) oldXBtn.remove();
     
-    // 改行用のbrタグが増え続けないように、結果表示のテキストをリセットした後にボタンを追加する
+
     resDiv.innerText = `${selected.sn}\n第 ${selected.en} 話\n『${selected.t}』`;
 
     if(selected.url) {
@@ -207,9 +206,8 @@ function g(){
         resDiv.appendChild(btn);
     }
 
-    // 2. XボタンはURLの有無に関わらず、毎回出す（IDを付与する）
     const xBtn = document.createElement("button");
-    xBtn.id = "x-btn"; // IDをしっかり付与
+    xBtn.id = "x-btn";
     xBtn.innerText = `結果をX(旧Twitter)でシェア`;
     xBtn.style.cssText = "background:#000000;color:white;border:1px solid #333;padding:12px 20px;font-size:16px;border-radius:5px;cursor:pointer;font-weight:bold;margin-top:10px;width:100%;";
     xBtn.onclick = () => {
