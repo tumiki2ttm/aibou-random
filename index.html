@@ -29,17 +29,19 @@ body.dark #result { color: #ff453a; }
     <button class="mode-btn" onclick="toggleMode()">ダークモード切替</button>
     <h2>相棒 ランダムガチャ</h2>
     <div class="controls">
-        <label for="partner-select">絞り込み条件：</label>
+        <label for="partner-select">相棒・登場人物：</label>
         <select id="partner-select">
             <option value="all">全員（すべて）</option>
             <option value="newyear">元旦スペシャル</option>
             <option value="kameyama_all">亀山 薫（全期間）</option>
             <option value="kameyama_1">亀山 薫（初代：Pre～S7e9）</option>
             <option value="solo">杉下右京単独（S7e10〜e18）</option>
-            <option value="kanbe">神戸 尊（S7e19〜S10＋ゲスト回）</option>
+            <option value="kanbe_all">神戸 尊（全期間）</option>
+            <option value="kanbe_2">神戸 尊（S7e19〜S10＋ゲスト回）</option>
             <option value="kai">甲斐 享（S11～S13）</option>
             <option value="kaburagi">冠城 亘（S14～S20）</option>
             <option value="kameyama_5">亀山 薫（5代目：S21～）</option>
+            <option value="kanbe_6">神戸 尊（6代目：S25e?～）</option>
             <option value="onoda">小野田 公顕</option>
             <option value="yonezawa">米沢 守</option>
             <option value="okochi">大河内 春樹</option>
@@ -54,6 +56,39 @@ body.dark #result { color: #ff453a; }
             <option value="aoki">青木 年男</option>
             <option value="haji">土師 太</option>
             <option value="yarikura">鑓鞍 兵衛</option>
+        </select>
+
+        <label for="season-select">シーズン指定：</label>
+        <select id="season-select">
+            <option value="all">すべてのシーズン</option>
+            <option value="Preシーズン">Preシーズン</option>
+            <option value="シーズン1">シーズン1</option>
+            <option value="シーズン2">シーズン2</option>
+            <option value="シーズン3">シーズン3</option>
+            <option value="シーズン4">シーズン4</option>
+            <option value="シーズン5">シーズン5</option>
+            <option value="シーズン6">シーズン6</option>
+            <option value="シーズン7">シーズン7</option>
+            <option value="シーズン8">シーズン8</option>
+            <option value="シーズン9">シーズン9</option>
+            <option value="シーズン10">シーズン10</option>
+            <option value="シーズン11">シーズン11</option>
+            <option value="シーズン12">シーズン12</option>
+            <option value="シーズン13">シーズン13</option>
+            <option value="シーズン14">シーズン14</option>
+            <option value="シーズン15">シーズン15</option>
+            <option value="シーズン16">シーズン16</option>
+            <option value="シーズン17">シーズン17</option>
+            <option value="シーズン18">シーズン18</option>
+            <option value="シーズン19">シーズン19</option>
+            <option value="シーズン20">シーズン20</option>
+            <option value="シーズン21">シーズン21</option>
+            <option value="シーズン22">シーズン22</option>
+            <option value="シーズン23">シーズン23</option>
+            <option value="シーズン24">シーズン24</option>
+            <option value="シーズン25">シーズン25</option>
+            <option value="「相棒」配信オリジナル">「相棒」配信オリジナル</option>
+            <option value="相棒 sideX">相棒 sideX</option>
         </select>
     </div>
     <button onclick="g()">事件を決める！</button>
@@ -89,7 +124,8 @@ const d = [
     { p: "k5", n: "シーズン22", url: "https://www.telasa.jp/series/13959", episodes: ["無敵の人\n〜特命係VS公安…失踪に潜む罠", "無敵の人\n〜特命係VS公安…巨悪への反撃", "スズメバチ", "天使の前髪", "冷血", "名探偵と眠り姫", "青春の光と影", "センチメンタル・ジャーニー", "男の花道", "サイレント・タトゥ", "その頬に触れるな", "惡の種", "恋文", "亀裂", "マッターホルンの殺人", "子ほめ", "インビジブル", "インビジブル\n〜爆弾テロ!最後のゲーム", "トレードオフ", "トレードオフ\n〜AI右京の完全推理"] },
     { p: "k5", n: "相棒 sideX", url: "https://www.telasa.jp/series/11923", episodes: ["相棒 sideX(sideA/sideB)"] },
     { p: "k5", n: "シーズン23", url: "https://www.telasa.jp/series/14998", episodes: ["警察官A\n〜要人暗殺の罠!姿なき首謀者", "警察官A\n〜逆転殺人!真犯人は二人いる!!", "楽園", "2つの顔", "幽霊ホテル", "薔薇と髭の夜明け", "復讐者は笑わない", "瞳の中のあなた", "最後の一日", "雨やどり", "33人の亀山薫", "細かいことが気になる患者", "レジリエンス", "中園照生の受難", "キャスリング", "花は咲く場所を選ばない", "盗まれた死体", "怪物と聖剣", "怪物と聖剣\n〜決戦"] },
-    { p: "k5", n: "シーズン24", url: "https://www.telasa.jp/series/15993", episodes: ["死して償え\n～疑惑の殺人？人間国宝の闇", "死して償え\n～白骨は語る！右京の奇策", "警察官B", "みんな彼女を好きになる", "昭和100年", "ティーロワイヤル", "息子", "梟は夜に飛ぶ", "カフカの手紙", "フィナーレ", "老人と寧々", "特調係 陣川公平", "信用できない語手", "薔薇と髭の告発", "他人の顔", "町一番の嫌われ者", "惡の芽", "ドミノ", "暗闇の鬼"] }
+    { p: "k5", n: "シーズン24", url: "https://www.telasa.jp/series/15993", episodes: ["死して償え\n～疑惑の殺人？人間国宝の闇", "死して償え\n～白骨は語る！右京の奇策", "警察官B", "みんな彼女を好きになる", "昭和100年", "ティーロワイヤル", "息子", "梟は夜に飛ぶ", "カフカの手紙", "フィナーレ", "老人と寧々", "特調係 陣川公平", "信用できない語手", "薔薇と髭の告発", "他人の顔", "町一番の嫌われ者", "惡の芽", "ドミノ", "暗闇の鬼"] },
+    { p: "mix", n: "シーズン25", url: "https://www.telasa.jp/series/16932", episodes: ["PMクライシス\n〜総理の秘密と密約の罠", "PMクライシス\n〜幻の犯人と総理の告白", "裁かれたい殺人"] }
 ];
 
 // 前回の結果を保持する変数
@@ -97,10 +133,13 @@ let lastResult = "";
 
 function g(){
     const sel = document.getElementById("partner-select").value;
+    const seasonSel = document.getElementById("season-select").value;
     const pool = [];
     
     d.forEach(season => {
         if (!season.episodes || season.episodes.length === 0) return;
+        if (seasonSel !== "all" && season.n !== seasonSel) return;
+
         const sNum = parseInt(season.n.replace("シーズン", "")) || 0;
 
         season.episodes.forEach((item, index) => {
@@ -112,7 +151,7 @@ function g(){
             // 相棒基本タグ
             if(season.p === "k1") tags.push("kameyama_all", "kameyama_1");
             if(season.p === "k5") tags.push("kameyama_all", "kameyama_5");
-            if(season.p === "kb") tags.push("kanbe");
+            if(season.p === "kb") tags.push("kanbe_all", "kanbe_2");
             if(season.p === "ka") tags.push("kai");
             if(season.p === "kg") tags.push("kaburagi");
 
@@ -120,7 +159,14 @@ function g(){
             if(season.n === "シーズン7") {
                 if(epNum <= 9) tags.push("kameyama_all", "kameyama_1");
                 else if(epNum >= 10 && epNum <= 18) tags.push("solo");
-                else if(epNum === 19) tags.push("kanbe");
+                else if(epNum === 19) tags.push("kanbe_all", "kanbe_2");
+            }
+
+            // 特殊分割 (S25) - 神戸尊登場回が判明次第、epNumで分岐可能
+            if(season.n === "シーズン25") {
+                // 現時点（1〜3話）は亀山薫。神戸登場回（e?）以降は kanbe_all, kanbe_6 を付与
+                tags.push("kameyama_all", "kameyama_5");
+                // 例: if(epNum >= ?) tags.push("kanbe_all", "kanbe_6");
             }
 
             // 元旦SP
@@ -167,7 +213,7 @@ function g(){
             const onodaL = {"Preシーズン": [1, 2, 3], "シーズン1": [1, 2, 11, 12], "シーズン2": [1, 2, 18, 21], "シーズン3": [1, 2, 3, 4, 5, 9, 18], "シーズン4": [1, 11, 21], "シーズン5": [1, 11, 15, 20], "シーズン6": [1, 10, 19], "シーズン7": [1, 2, 8, 9, 10, 19], "シーズン8": [1, 10, 19], "シーズン9": [1, 2, 10, 18], "シーズン16": [13, 14], "シーズン21": [20, 21]};
             if (onodaL[season.n]?.includes(epNum)) tags.push("onoda");
 
-            if(({"シーズン15":[13,14],"シーズン17":[10],"シーズン21":[20,21]}[season.n]?.includes(epNum))) tags.push("kanbe");
+            if(({"シーズン15":[13,14],"シーズン17":[10],"シーズン21":[20,21]}[season.n]?.includes(epNum))) tags.push("kanbe_all", "kanbe_2");
 
             // フィルタチェック
             if(sel === "all" || tags.includes(sel)) {
@@ -221,6 +267,6 @@ function g(){
 function toggleMode() { document.body.classList.toggle('dark'); }
 </script>
 
-<p style="text-align: center; color: #666; margin-top: 15px;">(※映画、特別編、裏相棒は含みません)<br><br>※このサイトはファンサイトであり<br>公式とは無関係の非公式サイトです</p>
+<p style="text-align: center; color: #666; margin-top: 15px;">(※映画、特別編(TELASA限定は含む)、裏相棒は含みません)<br>※S25e3までが入っています<br><br>※このサイトはファンサイトであり<br>公式とは無関係の非公式サイトです</p>
 </body>
 </html>
