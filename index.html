@@ -1,99 +1,399 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>相棒ランダムガチャ</title>
-    <style> 
-html {
-  touch-action: manipulation;
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="color-scheme" content="light dark" />
+<link rel="icon" href="data:," />
+<title>相棒ランダムガチャ</title>
+<style>
+:root{
+color-scheme: light dark;
+--bg:#f4f1ea;
+--surface:#ffffff;
+--surface-2:#ece7db;
+--text:#1d2733;
+--dim:#5d6a76;
+--border:#cfc8b8;
+--navy:#14263f;
+--navy-2:#1e3a5f;
+--gold:#a87e1f;
+--gold-bright:#e9c766;
+--red:#b02a30;
+--radius:10px;
 }
-body { font-family: sans-serif; text-align: center; background: #f4f4f9; color: #333; padding: 50px 20px; transition: background 0.3s, color 0.3s; }
-.box { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); display: inline-block; width: 100%; max-width: 650px; box-sizing: border-box; transition: background 0.3s; position: relative; }
-.controls { margin-bottom: 20px; text-align: left; }
-label { font-weight: bold; display: block; margin-bottom: 5px; font-size: 14px; color: #555; }
-select { width: 100%; padding: 12px; font-size: 16px; border-radius: 5px; border: 1px solid #ccc; margin-bottom: 20px; background: #fff; cursor: pointer; }
-button { background: #003366; color: white; border: none; padding: 15px 30px; font-size: 28px; border-radius: 5px; cursor: pointer; width: 100%; font-weight: bold; }
-#result { margin-top: 30px; font-size: 26px; font-weight: bold; color: #d32f2f; min-height: 80px; white-space: pre-line; line-height: 1.5; border-top: 2px dashed #eee; padding-top: 20px; }
-.mode-btn { position: absolute; top: 10px; right: 10px; width: auto; font-size: 14px; padding: 5px 10px; background: #bbb; color: #fff; }
-body.dark { background: #0d1117; color: #fff; }
-body.dark .box { background: #161b22; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid #30363d; }
-body.dark select { background: #0d1117; color: #fff; border-color: #30363d; }
-body.dark button { background: linear-gradient(135deg, #1f3c6d 0%, #002244 100%); color: #EAA005; border: 1px solid #EAA005; }
-body.dark #result { color: #ff453a; }
-    </style>
+@media (prefers-color-scheme: dark){
+:root{
+--bg:#0d1520;
+--surface:#16222f;
+--surface-2:#1e2f42;
+--text:#e9e5da;
+--dim:#9aa7b4;
+--border:#31445a;
+--navy:#0a1220;
+--navy-2:#1e3a5f;
+--gold:#c9a227;
+--gold-bright:#e9c766;
+--red:#e0656a;
+}
+}
+*{ box-sizing:border-box;}
+[hidden]{ display:none!important;}
+html{ touch-action:manipulation;}
+body{
+margin:0;
+background:var(--bg);
+color:var(--text);
+font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+-webkit-font-smoothing:antialiased;
+}
+button, select{ font-family:inherit;}
+button, [role="button"], select, summary{ min-height:2.25rem;}
+
+.wrap{ max-width:600px; margin:0 auto; padding:0 16px 40px;}
+
+.masthead{
+background:var(--navy);
+color:#f2eee3;
+margin:0 -16px;
+padding:28px 20px 24px;
+border-bottom:4px solid var(--gold);
+}
+.lead{ font-size:14px; line-height:1.7; color:var(--gold-bright); margin:0; letter-spacing:.06em;}
+h1{
+font-family:"Hiragino Mincho ProN","Yu Mincho",serif;
+font-size:27px; line-height:1.4; font-weight:700; margin:6px 0 0;
+}
+.sub{ font-size:14px; line-height:1.8; color:#c8cfd8; margin:10px 0 0;}
+.sub b{ color:#fff;}
+
+.card{
+background:var(--surface);
+border:1px solid var(--border);
+border-radius:var(--radius);
+padding:16px;
+margin-top:24px;
+}
+.card label{ display:block; font-size:14px; font-weight:700; margin:0 0 8px;}
+.card label:not(:first-child){ margin-top:16px;}
+select{
+width:100%;
+padding:12px;
+font-size:16px;
+border-radius:8px;
+border:1px solid var(--border);
+background:var(--surface);
+color:var(--text);
+cursor:pointer;
+}
+.pool-count{ font-size:14px; color:var(--dim); margin:12px 0 0;}
+.pool-count b{ color:var(--red); font-size:16px;}
+
+.draw-btn{
+margin-top:20px;
+width:100%;
+border:1px solid var(--gold);
+background:var(--navy-2);
+color:var(--gold-bright);
+padding:18px 24px;
+font-size:25px;
+font-weight:700;
+letter-spacing:.05em;
+border-radius:var(--radius);
+cursor:pointer;
+transition:transform.08s ease, opacity.2s ease;
+}
+@media (prefers-color-scheme: light){
+.draw-btn{ background:var(--navy);}
+}
+.draw-btn:active{ transform:scale(.98);}
+.draw-btn:disabled{ opacity:.65; cursor:default;}
+
+.result-card{
+background:var(--surface);
+border:1px solid var(--border);
+border-top:4px solid var(--red);
+border-radius:var(--radius);
+padding:20px;
+margin-top:24px;
+}
+.result-empty{
+border:1px dashed var(--border);
+border-radius:var(--radius);
+padding:24px 16px;
+margin-top:24px;
+text-align:center;
+color:var(--dim);
+font-size:15px;
+line-height:1.8;
+}
+.ep-season{ font-size:16px; font-weight:700; color:var(--navy-2); margin:0;}
+@media (prefers-color-scheme: dark){.ep-season{ color:var(--gold-bright);}}
+.ep-title{
+font-size:24px;
+line-height:1.45;
+font-weight:700;
+white-space:pre-line;
+margin:8px 0 0;
+}
+.badge-newyear{
+display:inline-block;
+margin-top:12px;
+border:1px solid var(--red);
+color:var(--red);
+border-radius:999px;
+padding:4px 12px;
+font-size:12px;
+font-weight:700;
+}
+.comment-block{
+border-top:2px dashed var(--border);
+margin-top:20px;
+padding-top:16px;
+}
+.comment-who{
+display:inline-block;
+font-size:13px;
+font-weight:700;
+letter-spacing:.12em;
+color:#fff;
+background:var(--navy-2);
+border-radius:4px;
+padding:3px 10px;
+margin:0;
+}
+.comment-text{ font-size:15px; line-height:1.8; margin:10px 0 0;}
+.telasa-btn{
+display:block;
+margin-top:20px;
+width:100%;
+background:#ff6600;
+color:#fff;
+text-align:center;
+text-decoration:none;
+padding:14px 20px;
+font-size:16px;
+font-weight:700;
+border-radius:8px;
+}
+.share-btn{
+display:block;
+margin-top:10px;
+width:100%;
+background:#000;
+color:#fff;
+border:1px solid #333;
+text-align:center;
+padding:12px 20px;
+font-size:15px;
+font-weight:700;
+border-radius:8px;
+cursor:pointer;
+}
+
+@keyframes gacha-shuffle{
+0%{ transform:translateY(0); opacity:1;}
+25%{ transform:translateY(-5px); opacity:.55;}
+50%{ transform:translateY(3px); opacity:.8;}
+75%{ transform:translateY(-2px); opacity:.6;}
+100%{ transform:translateY(0); opacity:1;}
+}
+@keyframes result-in{
+0%{ transform:translateY(14px) scale(.98); opacity:0;}
+100%{ transform:translateY(0) scale(1); opacity:1;}
+}
+.gacha-shuffling{ animation:gacha-shuffle.16s linear infinite;}
+.result-in{ animation:result-in.35s ease-out both;}
+@media (prefers-reduced-motion: reduce){
+.gacha-shuffling,.result-in{ animation:none;}
+}
+
+.history-head{
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:12px;
+margin-top:32px;
+}
+.history-head h2{ font-size:16px; font-weight:700; margin:0;}
+.clear-btn{
+background:none;
+border:none;
+color:var(--dim);
+font-size:14px;
+text-decoration:underline;
+cursor:pointer;
+padding:8px 12px;
+}
+.history-list{ list-style:none; margin:12px 0 0; padding:0;}
+.history-list li{ margin-top:8px;}
+.history-item{
+width:100%;
+text-align:left;
+background:var(--surface);
+border:1px solid var(--border);
+border-radius:8px;
+padding:12px 16px;
+cursor:pointer;
+color:var(--text);
+}
+.history-item.active{ border-color:var(--red); background:var(--surface-2);}
+.history-season{ font-size:14px; font-weight:700; color:var(--navy-2);}
+@media (prefers-color-scheme: dark){.history-season{ color:var(--gold-bright);}}
+.history-title{
+display:block;
+margin-top:2px;
+font-size:15px;
+font-weight:700;
+white-space:nowrap;
+overflow:hidden;
+text-overflow:ellipsis;
+}
+.history-who{ display:block; margin-top:2px; font-size:12px; color:var(--dim);}
+
+.spec{
+margin-top:36px;
+background:var(--surface);
+border:1px solid var(--border);
+border-radius:var(--radius);
+padding:4px 16px;
+}
+.spec summary{ font-size:14px; font-weight:700; cursor:pointer; padding:12px 0;}
+.spec ul{ margin:0 0 16px; padding-left:20px; font-size:13px; line-height:1.9; color:var(--dim);}
+
+footer{
+margin-top:32px;
+text-align:center;
+font-size:12px;
+line-height:1.8;
+color:var(--dim);
+}
+</style>
 </head>
 <body>
-
-<div class="box">
-    <button class="mode-btn" onclick="toggleMode()">ダークモード切替</button>
-    <h2>相棒 ランダムガチャ</h2>
-    <div class="controls">
-        <label for="partner-select">相棒・登場人物：</label>
-        <select id="partner-select">
-            <option value="all">全員（すべて）</option>
-            <option value="newyear">元旦スペシャル</option>
-            <option value="kameyama_all">亀山 薫（全期間）</option>
-            <option value="kameyama_1">亀山 薫（初代：Pre～S7e9）</option>
-            <option value="solo">杉下右京単独（S7e10〜e18）</option>
-            <option value="kanbe_all">神戸 尊（全期間）</option>
-            <option value="kanbe_2">神戸 尊（S7e19〜S10＋ゲスト回）</option>
-            <option value="kai">甲斐 享（S11～S13）</option>
-            <option value="kaburagi">冠城 亘（S14～S20）</option>
-            <option value="kameyama_5">亀山 薫（5代目：S21～）</option>
-            <option value="kanbe_6">神戸 尊（6代目：S25e?～）</option>
-            <option value="onoda">小野田 公顕</option>
-            <option value="yonezawa">米沢 守</option>
-            <option value="okochi">大河内 春樹</option>
-            <option value="jinkawa">陣川 公平</option>
-            <option value="hinako">片山 雛子</option>
-            <option value="setouchi">瀬戸内 米蔵</option>
-            <option value="sachiko">月本 幸子</option>
-            <option value="yashiro">社 美彌子</option>
-            <option value="kazama">風間 楓子</option>
-            <option value="kusakabe">日下部 彌彦</option>
-            <option value="kinugasa">衣笠 藤治</option>
-            <option value="aoki">青木 年男</option>
-            <option value="haji">土師 太</option>
-            <option value="yarikura">鑓鞍 兵衛</option>
-        </select>
-
-        <label for="season-select">シーズン指定：</label>
-        <select id="season-select">
-            <option value="all">すべてのシーズン</option>
-            <option value="Preシーズン">Preシーズン</option>
-            <option value="シーズン1">シーズン1</option>
-            <option value="シーズン2">シーズン2</option>
-            <option value="シーズン3">シーズン3</option>
-            <option value="シーズン4">シーズン4</option>
-            <option value="シーズン5">シーズン5</option>
-            <option value="シーズン6">シーズン6</option>
-            <option value="シーズン7">シーズン7</option>
-            <option value="シーズン8">シーズン8</option>
-            <option value="シーズン9">シーズン9</option>
-            <option value="シーズン10">シーズン10</option>
-            <option value="シーズン11">シーズン11</option>
-            <option value="シーズン12">シーズン12</option>
-            <option value="シーズン13">シーズン13</option>
-            <option value="シーズン14">シーズン14</option>
-            <option value="シーズン15">シーズン15</option>
-            <option value="シーズン16">シーズン16</option>
-            <option value="シーズン17">シーズン17</option>
-            <option value="シーズン18">シーズン18</option>
-            <option value="シーズン19">シーズン19</option>
-            <option value="シーズン20">シーズン20</option>
-            <option value="シーズン21">シーズン21</option>
-            <option value="シーズン22">シーズン22</option>
-            <option value="シーズン23">シーズン23</option>
-            <option value="シーズン24">シーズン24</option>
-            <option value="シーズン25">シーズン25</option>
-            <option value="「相棒」配信オリジナル">「相棒」配信オリジナル</option>
-            <option value="相棒 sideX">相棒 sideX</option>
-        </select>
-    </div>
-    <button onclick="g()">事件を決める！</button>
-    <div id="result"></div>
+<main class="wrap">
+<div class="masthead">
+<p class="lead">特命係が、今夜の事件を1件指名します</p>
+<h1>相棒ランダムガチャ</h1>
+<p class="sub">Preシーズンからシーズン25 第5話まで、全<b id="total-count">473</b>話が対象。当たった回の相棒や登場人物が、そのまま結果にひとこと添えます。条件で絞り込みもできます。</p>
 </div>
+
+<section class="card" aria-label="絞り込み条件">
+<label for="partner-select">相棒・登場人物</label>
+<select id="partner-select">
+<option value="all">全員（すべて）</option>
+<option value="newyear">元旦スペシャル</option>
+<option value="kameyama_all">亀山 薫（全期間）</option>
+<option value="kameyama_1">亀山 薫（初代：Pre～S7e9）</option>
+<option value="solo">杉下 右京 単独（S7e10〜e18）</option>
+<option value="kanbe_all">神戸 尊（全期間）</option>
+<option value="kanbe_2">神戸 尊（S7e19〜S10＋ゲスト回）</option>
+<option value="kai">甲斐 享（S11～S13）</option>
+<option value="kaburagi">冠城 亘（S14～S20）</option>
+<option value="kameyama_5">亀山 薫（5代目：S21～）</option>
+<option value="kanbe_6">神戸 尊（6代目：S25e?～）</option>
+<option value="onoda">小野田 公顕</option>
+<option value="yonezawa">米沢 守</option>
+<option value="okochi">大河内 春樹</option>
+<option value="jinkawa">陣川 公平</option>
+<option value="hinako">片山 雛子</option>
+<option value="setouchi">瀬戸内 米蔵</option>
+<option value="sachiko">月本 幸子</option>
+<option value="yashiro">社 美彌子</option>
+<option value="kazama">風間 楓子</option>
+<option value="kusakabe">日下部 彌彦</option>
+<option value="kinugasa">衣笠 藤治</option>
+<option value="aoki">青木 年男</option>
+<option value="haji">土師 太</option>
+<option value="yarikura">鑓鞍 兵衛</option>
+</select>
+
+<label for="season-select">シーズン指定</label>
+<select id="season-select">
+<option value="all">すべてのシーズン</option>
+<option value="Preシーズン">Preシーズン</option>
+<option value="シーズン1">シーズン1</option>
+<option value="シーズン2">シーズン2</option>
+<option value="シーズン3">シーズン3</option>
+<option value="シーズン4">シーズン4</option>
+<option value="シーズン5">シーズン5</option>
+<option value="シーズン6">シーズン6</option>
+<option value="シーズン7">シーズン7</option>
+<option value="シーズン8">シーズン8</option>
+<option value="シーズン9">シーズン9</option>
+<option value="シーズン10">シーズン10</option>
+<option value="シーズン11">シーズン11</option>
+<option value="シーズン12">シーズン12</option>
+<option value="シーズン13">シーズン13</option>
+<option value="シーズン14">シーズン14</option>
+<option value="シーズン15">シーズン15</option>
+<option value="シーズン16">シーズン16</option>
+<option value="シーズン17">シーズン17</option>
+<option value="シーズン18">シーズン18</option>
+<option value="シーズン19">シーズン19</option>
+<option value="シーズン20">シーズン20</option>
+<option value="「相棒」配信オリジナル">「相棒」配信オリジナル</option>
+<option value="シーズン21">シーズン21</option>
+<option value="シーズン22">シーズン22</option>
+<option value="相棒 sideX">相棒 sideX</option>
+<option value="シーズン23">シーズン23</option>
+<option value="シーズン24">シーズン24</option>
+<option value="シーズン25">シーズン25</option>
+</select>
+
+<p class="pool-count" aria-live="polite">現在の対象：<b id="pool-count">-</b> 件</p>
+</section>
+
+<button type="button" class="draw-btn" id="draw-btn">事件を引く！</button>
+
+<section aria-label="ガチャ結果" aria-live="polite">
+<div class="result-empty" id="result-empty">
+まだ事件は決まっていません。<br />「事件を引く！」を押すと、候補がシャッフルされてから1話に決まります。
+</div>
+<div class="result-card" id="result-nopool" hidden>
+<p style="font-weight:700;margin:0;">該当する回が見つかりませんでした。</p>
+<p style="font-size:14px;color:var(--dim);margin:8px 0 0;line-height:1.7;">右京さんでも引けない組み合わせです。条件を少しゆるめてみてください。</p>
+</div>
+<div class="result-card" id="result-card" hidden>
+<div id="result-shuffle-zone">
+<p class="ep-season" id="result-season"></p>
+<p class="ep-title" id="result-title"></p>
+<span class="badge-newyear" id="result-badge" hidden>元旦スペシャル</span>
+</div>
+<div class="comment-block" id="comment-block">
+<p class="comment-who" id="comment-who">杉下 右京</p>
+<p class="comment-text" id="comment-text"></p>
+</div>
+<a class="telasa-btn" id="telasa-btn" href="#" target="_blank" rel="noreferrer" hidden>TELASAで観る ➔</a>
+<button type="button" class="share-btn" id="share-btn" hidden>結果をX（旧Twitter）でシェア</button>
+</div>
+</section>
+
+<section aria-label="今夜の引き履歴" id="history-section" hidden>
+<div class="history-head">
+<h2 id="history-title">今夜の引き（0件）</h2>
+<button type="button" class="clear-btn" id="clear-btn">履歴を消す</button>
+</div>
+<ul class="history-list" id="history-list"></ul>
+</section>
+
+<details class="spec">
+<summary>出現演出の仕様</summary>
+<ul>
+<li>抽選中は約0.95秒間、70ミリ秒ごとに候補のタイトルへ表示を切り替えるシャッフル演出が入ります。</li>
+<li>確定時は結果カードが下からスライドインします。</li>
+<li>直前に出た回は、候補が2件以上ある場合に最大10回まで引き直して重複を避けます。</li>
+<li>履歴は新しい順に並び、タップするとその回の結果と登場人物のひとことを再表示します。</li>
+<li>端末の「視差効果を減らす／アニメーションを減らす」設定時は、シャッフルを省略して即時表示します。</li>
+<li>ひとことの話者は、当たった回の時代の相棒を中心に、その回に登場する人物から選ばれます。</li>
+</ul>
+</details>
+
+<footer>
+<p>（※映画、特別編（TELASA限定は含む）、裏相棒は含みません）<br />※シーズン25 第5話までが入っています</p>
+<p>※このサイトはファンサイトであり、公式とは無関係の非公式サイトです</p>
+</footer>
+</main>
 
 <script>
 const d = [
@@ -125,148 +425,448 @@ const d = [
     { p: "k5", n: "相棒 sideX", url: "https://www.telasa.jp/series/11923", episodes: ["相棒 sideX(sideA/sideB)"] },
     { p: "k5", n: "シーズン23", url: "https://www.telasa.jp/series/14998", episodes: ["警察官A\n〜要人暗殺の罠!姿なき首謀者", "警察官A\n〜逆転殺人!真犯人は二人いる!!", "楽園", "2つの顔", "幽霊ホテル", "薔薇と髭の夜明け", "復讐者は笑わない", "瞳の中のあなた", "最後の一日", "雨やどり", "33人の亀山薫", "細かいことが気になる患者", "レジリエンス", "中園照生の受難", "キャスリング", "花は咲く場所を選ばない", "盗まれた死体", "怪物と聖剣", "怪物と聖剣\n〜決戦"] },
     { p: "k5", n: "シーズン24", url: "https://www.telasa.jp/series/15993", episodes: ["死して償え\n～疑惑の殺人？人間国宝の闇", "死して償え\n～白骨は語る！右京の奇策", "警察官B", "みんな彼女を好きになる", "昭和100年", "ティーロワイヤル", "息子", "梟は夜に飛ぶ", "カフカの手紙", "フィナーレ", "老人と寧々", "特調係 陣川公平", "信用できない語手", "薔薇と髭の告発", "他人の顔", "町一番の嫌われ者", "惡の芽", "ドミノ", "暗闇の鬼"] },
-    { p: "mix", n: "シーズン25", url: "https://www.telasa.jp/series/16932", episodes: ["PMクライシス\n〜総理の秘密と密約の罠", "PMクライシス\n〜幻の犯人と総理の告白", "裁かれたい殺人"] }
+    { p: "mix", n: "シーズン25", url: "https://www.telasa.jp/series/16932", episodes: ["PMクライシス\n〜総理の秘密と密約の罠", "PMクライシス\n〜幻の犯人と総理の告白", "裁かれたい殺人", "メドゥーサの首", "ハルシネーション"] }
 ];
 
-// 前回の結果を保持する変数
-let lastResult = "";
-
-function g(){
-    const sel = document.getElementById("partner-select").value;
-    const seasonSel = document.getElementById("season-select").value;
-    const pool = [];
-    
-    d.forEach(season => {
-        if (!season.episodes || season.episodes.length === 0) return;
-        if (seasonSel !== "all" && season.n !== seasonSel) return;
-
-        const sNum = parseInt(season.n.replace("シーズン", "")) || 0;
-
-        season.episodes.forEach((item, index) => {
-            if (item === "") return;
-            let epNum = (typeof item === 'object') ? item.ep : index + 1;
-            let title = (typeof item === 'object') ? item.t : item;
-            let tags = [];
-
-            // 相棒基本タグ
-            if(season.p === "k1") tags.push("kameyama_all", "kameyama_1");
-            if(season.p === "k5") tags.push("kameyama_all", "kameyama_5");
-            if(season.p === "kb") tags.push("kanbe_all", "kanbe_2");
-            if(season.p === "ka") tags.push("kai");
-            if(season.p === "kg") tags.push("kaburagi");
-
-            // 特殊分割 (S7)
-            if(season.n === "シーズン7") {
-                if(epNum <= 9) tags.push("kameyama_all", "kameyama_1");
-                else if(epNum >= 10 && epNum <= 18) tags.push("solo");
-                else if(epNum === 19) tags.push("kanbe_all", "kanbe_2");
-            }
-
-            // 特殊分割 (S25) - 神戸尊登場回が判明次第、epNumで分岐可能
-            if(season.n === "シーズン25") {
-                // 現時点（1〜3話）は亀山薫。神戸登場回（e?）以降は kanbe_all, kanbe_6 を付与
-                tags.push("kameyama_all", "kameyama_5");
-                // 例: if(epNum >= ?) tags.push("kanbe_all", "kanbe_6");
-            }
-
-            // 元旦SP
-            const nyL = {"シーズン4":11,"シーズン5":11,"シーズン6":10,"シーズン7":10,"シーズン8":10,"シーズン9":10,"シーズン10":10,"シーズン11":11,"シーズン12":10,"シーズン13":10,"シーズン14":10,"シーズン15":10,"シーズン16":10,"シーズン17":10,"シーズン18":11,"シーズン19":11,"シーズン20":11,"シーズン21":11,"シーズン22":10,"シーズン23":9,"シーズン24":10};
-            if (nyL[season.n] === epNum) tags.push("newyear");
-
-            // キャラクター別リスト
-            const jL = {"シーズン3":[6],"シーズン6":[2],"シーズン7":[18],"シーズン9":[5,9,17],"シーズン10":[17],"シーズン11":[13],"シーズン12":[11],"シーズン13":[17],"シーズン14":[12],"シーズン16":[11],"シーズン18":[16],"シーズン20":[4],"シーズン22":[3],"シーズン23":[9],"シーズン24":[12]};
-            if (jL[season.n]?.includes(epNum)) tags.push("jinkawa");
-            
-            if ((season.n === "シーズン14" && epNum === 15) || (sNum >= 15 && sNum <= 20) || (season.n === "シーズン22" && (epNum === 1 || epNum === 2))) tags.push("aoki");
-            
-            const oL = {"シーズン2":[1,2,12,18],"シーズン3":[2,4,11,13],"シーズン4":[13,17],"シーズン5":[11,15,20],"シーズン6":[1,10,12],"シーズン7":[1,2,7,10],"シーズン8":[1,10,12,19],"シーズン9":[2,9,16],"シーズン10":[1,10,16,19],"シーズン11":[1,4,12,19],"シーズン12":[1,10],"シーズン13":[5,10,19],"シーズン14":[1,2,12,20],"シーズン15":[10,13,18],"シーズン16":[2,6,8,10,13,20],"シーズン17":[2,4,9],"シーズン18":[1,2,20],"シーズン19":[1,20],"シーズン20":[1,2,19,20],"シーズン21":[8,11,20,21],"シーズン22":[5,19,20],"シーズン23":[1,18,19],"シーズン24":[1]};
-            if (oL[season.n]?.includes(epNum)) tags.push("okochi");
-            
-            if ((season.n === "Preシーズン" && epNum >= 2) || (sNum >= 1 && sNum <= 14) || ({"シーズン15":[13,14],"シーズン16":[5],"シーズン20":[17],"シーズン21":[20,21]}[season.n]?.includes(epNum))) tags.push("yonezawa");
-            
-            const kL = {"シーズン15":[1,10,11,18],"シーズン16":[1,2,6,10,12,13,20],"シーズン17":[1,2,4,10,20],"シーズン18":[1,2,11],"シーズン19":[1,2,19,20],"シーズン20":[1,2,19,20],"シーズン21":[1,2,11,20,21],"シーズン22":[1,2,10,19,20],"シーズン23":[1,2,9,18,19],"シーズン24":[1,2,10,19]};
-            if (kL[season.n]?.includes(epNum)) tags.push("kinugasa");
-            
-            const hL = {"シーズン16":[20],"シーズン18":[1,2,12,20],"シーズン19":[1,11],"シーズン20":[9,11,20],"シーズン21":[1,2,4,5,11,18,20,21],"シーズン22":[2,10,11,12,15,19,20],"シーズン23":[1,2,3,8,18,19],"シーズン24":[1,2,3,5,6,8,10,13,14,18,19]};
-            if (hL[season.n]?.includes(epNum)) tags.push("haji");
-            
-            if ((sNum === 4 && epNum === 19) || (sNum === 6 && (epNum === 11 || epNum === 12)) || (sNum === 10 && epNum >= 12) || (sNum >= 11 && sNum <= 16) || (sNum === 17 && epNum <= 19)) tags.push("sachiko");
-            
-            const kazL = {"シーズン15":[18],"シーズン16":[1,13,14,20],"シーズン17":[1,2,10,20],"シーズン18":[1,2,4,20],"シーズン19":[1,2]};
-            if (kazL[season.n]?.includes(epNum)) tags.push("kazama");
-            
-            const yasL = {"シーズン13":[1,10,15,16],"シーズン15":[1,10,18],"シーズン16":[1,2,10,13,14,20],"シーズン17":[10,20],"シーズン18":[1,2,20],"シーズン19":[1,2,11,20],"シーズン20":[1,2,3,11,19,20],"シーズン21":[1,2,11,20,21],"シーズン22":[1,2,10,19,20],"シーズン23":[1,2,9,18,19],"シーズン24":[1,2,10,19]};
-            if (yasL[season.n]?.includes(epNum)) tags.push("yashiro");
-            
-            const kusL = {"シーズン14":[1,4,15,16,18,20],"シーズン15":[1,8,18],"シーズン16":[1,2,8,13],"シーズン17":[7,10],"シーズン20":[19,20]};
-            if (kusL[season.n]?.includes(epNum)) tags.push("kusakabe");
-            
-            const hinL = {"シーズン3":[1,2,3],"シーズン6":[16],"シーズン9":[18],"シーズン10":[19],"シーズン13":[18],"シーズン14":[10],"シーズン16":[13,14],"シーズン18":[1,2],"シーズン20":[19,20],"シーズン21":[1,2]};
-            if (hinL[season.n]?.includes(epNum)) tags.push("hinako");
-            
-            const yarL = {"シーズン17":[1,2],"シーズン18":[2],"シーズン19":[19,20],"シーズン20":[19,20],"シーズン21":[1,2]};
-            if (yarL[season.n]?.includes(epNum)) tags.push("yarikura");
-            
-            const setL = {"シーズン2":[21],"シーズン3":[1,2,3,19],"シーズン4":[1],"シーズン7":[1,2],"シーズン9":[18],"シーズン12":[19],"シーズン16":[13,14]};
-            if (setL[season.n]?.includes(epNum)) tags.push("setouchi");
-
-            const onodaL = {"Preシーズン": [1, 2, 3], "シーズン1": [1, 2, 11, 12], "シーズン2": [1, 2, 18, 21], "シーズン3": [1, 2, 3, 4, 5, 9, 18], "シーズン4": [1, 11, 21], "シーズン5": [1, 11, 15, 20], "シーズン6": [1, 10, 19], "シーズン7": [1, 2, 8, 9, 10, 19], "シーズン8": [1, 10, 19], "シーズン9": [1, 2, 10, 18], "シーズン16": [13, 14], "シーズン21": [20, 21]};
-            if (onodaL[season.n]?.includes(epNum)) tags.push("onoda");
-
-            if(({"シーズン15":[13,14],"シーズン17":[10],"シーズン21":[20,21]}[season.n]?.includes(epNum))) tags.push("kanbe_all", "kanbe_2");
-
-            // フィルタチェック
-            if(sel === "all" || tags.includes(sel)) {
-                pool.push({ sn: season.n, url: season.url, en: epNum, t: title });
-            }
-        });
-    });
-    
-    const resDiv = document.getElementById("result");
-    if(pool.length === 0) { resDiv.innerText = "該当する回が見つかりませんでした。"; return; }
-
-    let selected;
-    let attempts = 0;
-    do {
-        selected = pool[Math.floor(Math.random() * pool.length)];
-        attempts++;
-    } while (pool.length > 1 && `${selected.sn}-${selected.en}` === lastResult && attempts < 10);
-
-    lastResult = `${selected.sn}-${selected.en}`;
-
-    const oldBtn = document.getElementById("t-btn");
-    if(oldBtn) oldBtn.remove();
-    const oldXBtn = document.getElementById("x-btn");
-    if(oldXBtn) oldXBtn.remove();
-    
-
-    resDiv.innerText = `${selected.sn}\n第 ${selected.en} 話\n『${selected.t}』`;
-
-    if(selected.url) {
-        const btn = document.createElement("button");
-        btn.id = "t-btn";
-        btn.innerText = `TELASAで観る ➔`;
-        btn.style.cssText = "background:#ff6600;color:white;border:none;padding:12px 20px;font-size:16px;border-radius:5px;cursor:pointer;font-weight:bold;margin-top:15px;width:100%;";
-        btn.onclick = () => window.open(selected.url, '_blank');
-        resDiv.appendChild(document.createElement("br"));
-        resDiv.appendChild(btn);
-    }
-
-    const xBtn = document.createElement("button");
-    xBtn.id = "x-btn";
-    xBtn.innerText = `結果をX(旧Twitter)でシェア`;
-    xBtn.style.cssText = "background:#000000;color:white;border:1px solid #333;padding:12px 20px;font-size:16px;border-radius:5px;cursor:pointer;font-weight:bold;margin-top:10px;width:100%;";
-    xBtn.onclick = () => {
-        const text = encodeURIComponent(`【相棒ランダムガチャ】\n\n${selected.sn} 第 ${selected.en} 話\n『${selected.t}』を引き当てました！\n\n#相棒ランダムガチャ #相棒 #aibou \n`);
-        const url = encodeURIComponent(window.location.href);
-        window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
-    };
-    resDiv.appendChild(document.createElement("br"));
-    resDiv.appendChild(xBtn);
+// ===== 登場人物のひとこと =====
+var SPEAKERS = {
+ukyo: { name: "杉下 右京",
+first: ["ようこそ、特命係へ。今夜の事件はこちらです。……細かいところが、気になりますねぇ。", "最初の一件は、こちらにいたしましょう。紅茶でも淹れて、じっくり推理といきましょうか。"],
+normal: ["今夜はこの事件といたしましょう。事件の細部にこそ、真実は宿るものです。", "決まりですね。見落としのないよう、最初から丁寧に追っていきましょう。", "ふむ、この一件ですか。良いですねぇ、今夜はこれでいきましょう。僕の勘も、そう言っています。", "なかなか興味深い引きですね。さっそく始めましょうか。"],
+newyear: ["元旦スペシャルですね。新年にふさわしい、大掛かりな一件です。心してかかりましょう。", "おや、元旦スペシャルですか。幸先のよい引きですね。長丁場になりますが、お付き合いください。"],
+finale: ["……これは、ただの事件では終わらない回ですね。心してご覧ください。", "節目の一件です。どうぞ、最後まで見届けてくださいね。"],
+again: ["もう一度、ですか。よろしいですよ。納得のいく一件が見つかるまで、お付き合いしましょう。", "引き直しですね。構いません、じっくり選びましょう。"],
+late: ["夜も更けてきましたね。静かな時間の推理も、また格別です。", "こんな時間の事件ですか。眠気覚ましに、紅茶をもう一杯どうぞ。"]
+},
+kameyama: { name: "亀山 薫",
+first: ["よし、最初の一件はこれだ！右京さんと一緒に、じっくり観ようぜ。", "出た、最初の一件！こいつは熱い展開の予感がするな。"],
+normal: ["出たな、この事件！今夜はこの回で決まりだな、右京さん！", "おっ、いいの引いたんじゃないか？さっそく観ようぜ。", "これだこれだ。事件ってのは、こういう偶然から始まるんだよな。", "よし、今夜はこの一件だ。最後まで付き合うぜ。"],
+newyear: ["元旦スペシャルか！正月から大事件だな、こりゃあ見応えあるぜ。", "お正月の一発目はこれだ！でかい事件ほど燃えるんだよな。"],
+finale: ["……この回は、俺にとっても特別な一件だ。ちゃんと見届けてくれよな。", "節目の回だな。……うん、しっかり目に焼き付けようぜ。"],
+again: ["もう一回か？いいぜ、何度でも付き合うよ。納得いくまで引こうぜ。", "引き直しだな。よし、次こそドンピシャの一件を引くぞ。"],
+late: ["こんな時間まで事件か……付き合うぜ、もちろん。", "夜更かしの推理だな。右京さんもまだ起きてるだろうしな。"]
+},
+kanbe: { name: "神戸 尊",
+first: ["最初の一件は、こちらになります。どうぞ、落ち着いてご覧ください。", "ようこそ。今夜の事件はこれに決まりました。"],
+normal: ["今夜はこの事件のようです。なかなか興味深い選択ですね。", "決まりましたか。では、特命係らしくスマートに参りましょう。", "んふふ、悪くない引きですね。この回、僕は好きですよ。", "この一件ですか。……ええ、悪くないと思います。"],
+newyear: ["んふふっ、元旦スペシャルとは、幸先がいいですね。長丁場ですが、お付き合いください。", "お正月にふさわしい大物案件ですね。さっそく参りましょう。"],
+finale: ["節目の一件ですね。……どうぞ、最後まで見届けてください。", "この回は、僕にとっても特別です。静かに、ご覧ください。"],
+again: ["もう一度、ですか。承知しました。納得いくまでどうぞ。", "引き直しですね。ええ、付き合いますよ。"],
+late: ["夜更けの事件ですか。……静かな推理も、悪くないですね。", "こんな時間まで。んふふ、付き合いますよ、もちろん。"]
+},
+kai: { name: "甲斐 享",
+first: ["最初の一件、決まったっすよ。杉下さんと一緒に観ていきましょう。", "よし、一件目はこちらっすね！テンポよくいきましょう。"],
+normal: ["今夜はこれっすね！さっそく再生しちゃいましょう。", "出ましたね、この事件。俺も気になってた回っす。", "よし、今夜はこの一件で。最後まで付き合うっすよ。", "いい引きっすね。この回、熱いっすよ。"],
+newyear: ["元旦スペシャルっすか！正月から気合入ってますね。", "お正月の一発目、でかい事件が来たっすね！"],
+finale: ["……この回は、俺にとっても忘れられない一件ですね。観てください。", "節目の一件。……しっかり見届けてください。"],
+again: ["もう一回っすか？いいっすよ、何度でもどうぞ。", "引き直しっすね。次はもっといいの、引いちゃいましょう。"],
+late: ["夜更けの事件っすね。眠くなる前に一気に観ちゃいましょう。", "こんな時間まで、付き合うっすよ！もちろん！"]
+},
+kaburagi: { name: "冠城 亘",
+first: ["最初の一件はこちらです。右京さんと、じっくりどうぞ。", "ようこそ特命係へ。今夜の事件はこれに決まりました。"],
+normal: ["今夜はこの事件ですね。なかなかいいところを突いてきますね。", "決まりですね。では、特命係の推理をお楽しみください。", "へえ、この回ですか。僕ももう一度観たいところです。", "悪くない引きですね。今夜はこれでいきましょう。"],
+newyear: ["元旦スペシャルですね。お正月にふさわしい大物案件です。", "おおっ、新年から大事件ですか。幸先がいいですね。"],
+finale: ["節目の一件ですね。……僕にとっても、特別な事件です。", "この回は、静かに見届けたい一件ですね。どうぞ、最後まで。"],
+again: ["もう一度、ですか。いいですよ、納得いくまで付き合います。", "引き直しですね。では、次の一件をどうぞ。"],
+late: ["夜更けの推理ですね。静かな時間も、嫌いじゃないです。", "こんな時間の事件ですか。付き合いますよ、もちろん。"]
+},
+itami: { name: "伊丹 憲一",
+normal: ["…チッ…なんで特命係の引いた事件を、俺が紹介してんだ。まあ、いい回ではある。", "特命係ィ……の引いた事件はこれだ。文句は言わせねえぞ、名作だからな。", "おい亀山！テメェまた余計な事件引きやがって！……まあ、骨のあるヤマだがな！", "おい芹沢、余計なこと喋るな！……コホン、今夜はこの事件を観やがれ！", "特命係の亀山ァ！……じゃねえや、今夜のヤマはこれだ！とっとと観て寝るんだぞ！"]
+},
+serizawa: { name: "芹沢 慶二",
+normal: ["出ました、この回っすね！……あ、先輩には内緒にしといてくださいよ？", "捜査一課の芹沢です！この事件、俺も結構覚えてるんすよね〜。", "特命係に関わるとろくなことないんすけど……この回は普通に面白いっす！", "えっ、この事件ですか？伊丹先輩がブチギレる前にサクッと観ちゃいましょう！", "先輩、また特命係に手柄持ってかれちゃいましたよ〜……あ、どうぞゆっくり観てください！"]
+},
+izumo: { name: "出雲 麗音",
+normal: ["捜査一課・出雲麗音です。今夜はこの一件ですか……骨がありそうですね。", "元白バイ隊員の勘ですけど、この事件、最後まで油断しないほうがいいですよ。", "伊丹先輩たちは騒いでますけど……私はこの回、嫌いじゃないです。", "特命係のお手並み拝見、と行きますか。じっくり楽しんでくださいね。", "撃たれた経験から言わせてもらうと……こういう危ないヤマほど、目が離せないんですよね。"]
+},
+miura: { name: "三浦 信輔",
+normal: ["三浦だ。おい伊丹、芹沢、お前らも余計な口を挟むな。今夜はこれで行こう。", "ふむ……この事件か。昔を思い出すな。じっくり観ていくといい。", "捜査一課も色々あったが、この一件は心に残る回だな。", "特命係のやり方は相変わらずだが……まあ、真実には辿り着くはずだ。", "おいおい、懐かしい事件を引き当てたもんだな。ゆっくり観ていってくれ。"]
+},
+okochi: { name: "大河内 春樹",
+normal: ["……ボリボリ……今夜はこの一件を監察……いや、鑑賞ですか。", "職務に私情は挟まない主義ですが……この事件は、見応えがありますね。", "警視庁警務部首席監察官・大河内です。今夜はこのエピソードを精査してください。", "……ピルケースを開ける回数が増えそうな事件ですね。しっかりご覧なさい。", "特命係の行動には常に疑問を持っていますが……この結果には、納得せざるを得ません。"]
+},
+kakuta: { name: "角田 六郎",
+normal: ["よっ、暇か？……おっ、今夜はこの事件か！俺もコーヒー淹れて一緒に観ようかねぇ。", "組織犯罪対策五課…じゃない、今は薬物銃器対策課の角田だ！おい杉下ぁ、今夜の事件、なかなか面白そうじゃないの！", "暇だから覗きに来たら、いい回引いてるじゃないの！ゆっくり楽しんでってよ。", "油売りに来たらちょうどいい事件引いてるねぇ。パンダのカップで一杯やりながら観なよ。", "ちょいと杉下ぁ、組対の仕事も手伝ってほしいくらいだけど……まあ今夜はこの事件をじっくり観な！"]
+},
+mashiko: { name: "益子 桑栄",
+normal: ["鑑識の益子だ。……米沢先輩みたいにお人好しじゃねえぞ。まあ、この鑑識資料は見といて損はねえがな。", "亀山の奴がまた嗅ぎ回ってんのか。……同期面すんじゃねえよ。これで貸し一つだからな！", "現場の痕跡は嘘つかねえよ。隅々までしっかり見やがれ。", "……猫の餌やりがあるんだ、手短にしろ。今夜はこのヤマで決まりだ。"]
+},
+yonezawa: { name: "米沢 守",
+normal: ["鑑識の米沢です。今夜の事件はこちら。証拠品の数々にも、ぜひご注目を。", "おやおや、この事件ですか。鑑識の見せ場も多い回ですよ。", "杉下警部のお供をして数々の現場を踏みましたが、この一件は実に興味深い鑑識結果が出ております。", "鉄道模型を走らせながら観るのにもぴったりな名エピソードですよ。"]
+},
+jinkawa: { name: "陣川 公平",
+normal: ["陣川です！今夜の事件、僕も全力で応援します！", "出ました、この事件！僕も一緒に捜査……あ、鑑賞します！", "今回こそ僕の運命の女性が関わっているのでは……？！杉下先輩、僕も観ます！", "特命係の第三の男・陣川公平！今夜の一件、熱い情熱を持ってお届けします！"]
+},
+aoki: { name: "青木 年男",
+normal: ["ふーん、特命係が引き当てたの、この事件ですか。……まあ、僕の優秀な頭脳から見ても悪くない回ですけどね。", "警察嫌いの僕が言うのもなんですけど、このエピソードはチェックしといたほうがいいですよ。", "ハッキングするまでもなく、名作ですね。どうぞ、せいぜい楽しんでください。", "チッ……杉下右京め。まあいいや、今夜はこの事件を観て僕の有能さを思い出してください。", "冠城亘…酷い男…"]
+},
+haji: { name: "土師 太",
+normal: ["サイバーセキュリティ対策本部の土師です。杉下右京、大っ嫌いなんですよね……あ、この回は観ますけど。", "僕の時間を奪わないでくれます？……まあ、この事件ならデータを解析してやる価値はありますね。", "フン、特命係がまた勝手なことやってますよ。……でも、この展開はちょっと気になりますね。", "青木の奴、また冠城にフラれてやんの！"]
 }
-function toggleMode() { document.body.classList.toggle('dark'); }
-</script>
+};
 
-<p style="text-align: center; color: #666; margin-top: 15px;">(※映画、特別編(TELASA限定は含む)、裏相棒は含みません)<br>※S25e3までが入っています<br><br>※このサイトはファンサイトであり<br>公式とは無関係の非公式サイトです</p>
+function pickFrom(arr){ return arr[Math.floor(Math.random() * arr.length)];}
+function eraPartner(ep){
+if (ep.sn === "シーズン7") {
+if (ep.en <= 9) return "kameyama";
+if (ep.en >= 19) return "kanbe";
+return null;
+}
+if (ep.p === "k1" || ep.p === "k5") return "kameyama";
+if (ep.p === "kb") return "kanbe";
+if (ep.p === "ka") return "kai";
+if (ep.p === "kg") return "kaburagi";
+return "kameyama";
+}
+function isFinaleTitle(title){ return /最後|最終|別離|卒業|ラスト/.test(title);}
+
+function charaComment(ep, drawCount){
+var partner = eraPartner(ep);
+var isNY = ep.tags.indexOf("newyear") >= 0;
+var hour = new Date().getHours();
+var sNum = parseInt(ep.sn.replace("シーズン", ""), 10) || 0;
+var isPre = ep.sn === "Preシーズン";
+
+var kind = "normal";
+if (drawCount === 1) kind = "first";
+else if (isNY) kind = "newyear";
+else if (isFinaleTitle(ep.t)) kind = "finale";
+else if (drawCount >= 3 && Math.random() < 0.3) kind = "again";
+else if ((hour >= 23 || hour < 4) && Math.random() < 0.35) kind = "late";
+
+// 話者候補：右京と時代の相棒を軸に、その時代・回の登場人物を混ぜる
+var weighted = ["ukyo", "ukyo"];
+if (partner) weighted.push(partner, partner, partner);
+
+// レギュラー・準レギュラー
+weighted.push("kakuta"); // 角田課長は全期間
+weighted.push("itami");  // 伊丹刑事は全期間
+
+// 三浦刑事：S1〜S12第1話
+if ((sNum >= 1 && sNum <= 11) || (sNum === 12 && ep.en === 1)) {
+  weighted.push("miura");
+}
+
+// 芹沢刑事：S2第4話以降
+if ((sNum === 2 && ep.en >= 4) || sNum >= 3) {
+  weighted.push("serizawa");
+}
+
+// 出雲麗音：S19以降
+if (sNum >= 19) {
+  weighted.push("izumo");
+}
+
+// 大河内春樹：タグまたはS2以降の登場回
+if (ep.tags.indexOf("okochi") >= 0) {
+  weighted.push("okochi", "okochi");
+}
+
+// 米沢守：タグまたはS1〜S14
+if (ep.tags.indexOf("yonezawa") >= 0 || (sNum >= 1 && sNum <= 14) || isPre) {
+  weighted.push("yonezawa");
+}
+
+// 益子桑栄：S15以降
+if (sNum >= 15) {
+  weighted.push("mashiko");
+}
+
+// 陣川公平：タグ
+if (ep.tags.indexOf("jinkawa") >= 0) {
+  weighted.push("jinkawa", "jinkawa", "jinkawa");
+}
+
+// 青木年男：タグ
+if (ep.tags.indexOf("aoki") >= 0) {
+  weighted.push("aoki", "aoki");
+}
+
+// 土師太：タグまたはS21以降
+if (ep.tags.indexOf("haji") >= 0 || sNum >= 21) {
+  weighted.push("haji");
+}
+
+var key = weighted[Math.floor(Math.random() * weighted.length)];
+var sp = SPEAKERS[key];
+
+// セリフの決定（指定のkindがあればそれを、無ければnormalから選択）
+var text = "";
+if (sp && sp[kind] && sp[kind].length > 0) {
+  text = pickFrom(sp[kind]);
+} else if (sp && sp.normal && sp.normal.length > 0) {
+  text = pickFrom(sp.normal);
+} else {
+  sp = SPEAKERS.ukyo;
+  text = pickFrom(sp.normal);
+}
+
+return { who: sp.name, text: text };
+}
+
+// ===== プール構築（元のガチャのタグ判定を移植） =====
+function buildPool(){
+var sel = document.getElementById("partner-select").value;
+var seasonSel = document.getElementById("season-select").value;
+var pool = [];
+d.forEach(function(season){
+if (!season.episodes || season.episodes.length === 0) return;
+if (seasonSel!== "all" && season.n!== seasonSel) return;
+var sNum = parseInt(season.n.replace("シーズン", ""), 10) || 0;
+season.episodes.forEach(function(item, index){
+if (item === "") return;
+var epNum = (typeof item === "object")? item.ep: index + 1;
+var title = (typeof item === "object")? item.t: item;
+var tags = [];
+
+if (season.p === "k1") tags.push("kameyama_all", "kameyama_1");
+if (season.p === "k5") tags.push("kameyama_all", "kameyama_5");
+if (season.p === "kb") tags.push("kanbe_all", "kanbe_2");
+if (season.p === "ka") tags.push("kai");
+if (season.p === "kg") tags.push("kaburagi");
+
+if (season.n === "シーズン7") {
+if (epNum <= 9) tags.push("kameyama_all", "kameyama_1");
+else if (epNum >= 10 && epNum <= 18) tags.push("solo");
+else if (epNum === 19) tags.push("kanbe_all", "kanbe_2");
+}
+if (season.n === "シーズン25") {
+tags.push("kameyama_all", "kameyama_5");
+}
+
+var nyL = {"シーズン4":11,"シーズン5":11,"シーズン6":10,"シーズン7":10,"シーズン8":10,"シーズン9":10,"シーズン10":10,"シーズン11":11,"シーズン12":10,"シーズン13":10,"シーズン14":10,"シーズン15":10,"シーズン16":10,"シーズン17":10,"シーズン18":11,"シーズン19":11,"シーズン20":11,"シーズン21":11,"シーズン22":10,"シーズン23":9,"シーズン24":10};
+if (nyL[season.n] === epNum) tags.push("newyear");
+
+var jL = {"シーズン3":[6],"シーズン6":[2],"シーズン7":[18],"シーズン9":[5,9,17],"シーズン10":[17],"シーズン11":[13],"シーズン12":[11],"シーズン13":[17],"シーズン14":[12],"シーズン16":[11],"シーズン18":[16],"シーズン20":[4],"シーズン22":[3],"シーズン23":[9],"シーズン24":[12]};
+if ((jL[season.n] || []).indexOf(epNum) >= 0) tags.push("jinkawa");
+
+if ((season.n === "シーズン14" && epNum === 15) || (sNum >= 15 && sNum <= 20) || (season.n === "シーズン22" && (epNum === 1 || epNum === 2))) tags.push("aoki");
+
+var oL = {"シーズン2":[1,2,12,18],"シーズン3":[2,4,11,13],"シーズン4":[13,17],"シーズン5":[11,15,20],"シーズン6":[1,10,12],"シーズン7":[1,2,7,10],"シーズン8":[1,10,12,19],"シーズン9":[2,9,16],"シーズン10":[1,10,16,19],"シーズン11":[1,4,12,19],"シーズン12":[1,10],"シーズン13":[5,10,19],"シーズン14":[1,2,12,20],"シーズン15":[10,13,18],"シーズン16":[2,6,8,10,13,20],"シーズン17":[2,4,9],"シーズン18":[1,2,20],"シーズン19":[1,20],"シーズン20":[1,2,19,20],"シーズン21":[8,11,20,21],"シーズン22":[5,19,20],"シーズン23":[1,18,19],"シーズン24":[1],"シーズン25":[1,2]};
+if ((oL[season.n] || []).indexOf(epNum) >= 0) tags.push("okochi");
+
+var yonExtra = {"シーズン15":[13,14],"シーズン16":[5],"シーズン20":[17],"シーズン21":[20,21]};
+if ((season.n === "Preシーズン" && epNum >= 2) || (sNum >= 1 && sNum <= 14) || (yonExtra[season.n] || []).indexOf(epNum) >= 0) tags.push("yonezawa");
+
+var kL = {"シーズン15":[1,10,11,18],"シーズン16":[1,2,6,10,12,13,20],"シーズン17":[1,2,4,10,20],"シーズン18":[1,2,11],"シーズン19":[1,2,19,20],"シーズン20":[1,2,19,20],"シーズン21":[1,2,11,20,21],"シーズン22":[1,2,10,19,20],"シーズン23":[1,2,9,18,19],"シーズン24":[1,2,10,19],"シーズン25":[1,2]};
+if ((kL[season.n] || []).indexOf(epNum) >= 0) tags.push("kinugasa");
+
+var hL = {"シーズン16":[20],"シーズン18":[1,2,12,20],"シーズン19":[1,11],"シーズン20":[9,11,20],"シーズン21":[1,2,4,5,11,18,20,21],"シーズン22":[2,10,11,12,15,19,20],"シーズン23":[1,2,3,8,18,19],"シーズン24":[1,2,3,5,6,8,10,13,14,18,19],"シーズン25":[1,2]};
+if ((hL[season.n] || []).indexOf(epNum) >= 0) tags.push("haji");
+
+if ((sNum === 4 && epNum === 19) || (sNum === 6 && (epNum === 11 || epNum === 12)) || (sNum === 10 && epNum >= 12) || (sNum >= 11 && sNum <= 16) || (sNum === 17 && epNum <= 19)) tags.push("sachiko");
+
+var kazL = {"シーズン15":[18],"シーズン16":[1,13,14,20],"シーズン17":[1,2,10,20],"シーズン18":[1,2,4,20],"シーズン19":[1,2]};
+if ((kazL[season.n] || []).indexOf(epNum) >= 0) tags.push("kazama");
+
+var yasL = {"シーズン13":[1,10,15,16],"シーズン15":[1,10,18],"シーズン16":[1,2,10,13,14,20],"シーズン17":[10,20],"シーズン18":[1,2,20],"シーズン19":[1,2,11,20],"シーズン20":[1,2,3,11,19,20],"シーズン21":[1,2,11,20,21],"シーズン22":[1,2,10,19,20],"シーズン23":[1,2,9,18,19],"シーズン24":[1,2,10,19],"シーズン25":[1,2]};
+if ((yasL[season.n] || []).indexOf(epNum) >= 0) tags.push("yashiro");
+
+var kusL = {"シーズン14":[1,4,15,16,18,20],"シーズン15":[1,8,18],"シーズン16":[1,2,8,13],"シーズン17":[7,10],"シーズン20":[19,20]};
+if ((kusL[season.n] || []).indexOf(epNum) >= 0) tags.push("kusakabe");
+
+var hinL = {"シーズン3":[1,2,3],"シーズン6":[16],"シーズン9":[18],"シーズン10":[19],"シーズン13":[18],"シーズン14":[10],"シーズン16":[13,14],"シーズン18":[1,2],"シーズン20":[19,20],"シーズン21":[1,2]};
+if ((hinL[season.n] || []).indexOf(epNum) >= 0) tags.push("hinako");
+
+var yarL = {"シーズン17":[1,2],"シーズン18":[2],"シーズン19":[19,20],"シーズン20":[19,20],"シーズン21":[1,2],"シーズン25":[1,2]};
+if ((yarL[season.n] || []).indexOf(epNum) >= 0) tags.push("yarikura");
+
+var setL = {"シーズン2":[21],"シーズン3":[1,2,3,19],"シーズン4":[1],"シーズン7":[1,2],"シーズン9":[18],"シーズン12":[19],"シーズン16":[13,14]};
+if ((setL[season.n] || []).indexOf(epNum) >= 0) tags.push("setouchi");
+
+var onodaL = {"Preシーズン":[1,2,3],"シーズン1":[1,2,11,12],"シーズン2":[1,2,18,21],"シーズン3":[1,2,3,4,5,9,18],"シーズン4":[1,11,21],"シーズン5":[1,11,15,20],"シーズン6":[1,10,19],"シーズン7":[1,2,8,9,10,19],"シーズン8":[1,10,19],"シーズン9":[1,2,10,18],"シーズン16":[13,14],"シーズン21":[20,21]};
+if ((onodaL[season.n] || []).indexOf(epNum) >= 0) tags.push("onoda");
+
+var kanbeGuest = {"シーズン15":[13,14],"シーズン17":[10],"シーズン21":[20,21]};
+if ((kanbeGuest[season.n] || []).indexOf(epNum) >= 0) tags.push("kanbe_all", "kanbe_2");
+
+if (sel === "all" || tags.indexOf(sel) >= 0) {
+pool.push({ p: season.p, sn: season.n, url: season.url || "", en: epNum, t: title, tags: tags});
+}
+});
+});
+return pool;
+}
+
+function seasonLine(ep){
+if (ep.sn.indexOf("オリジナル") >= 0 || ep.sn.indexOf("sideX") >= 0) return ep.sn;
+return ep.sn + "　第 " + ep.en + " 話";
+}
+function esc(s){
+return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+// ===== 状態 =====
+var lastResult = "";
+var historyList = [];
+var currentEntry = null;
+var shuffling = false;
+var shuffleTimer = null;
+var finishTimer = null;
+
+var drawBtn = document.getElementById("draw-btn");
+var resultEmpty = document.getElementById("result-empty");
+var resultNoPool = document.getElementById("result-nopool");
+var resultCard = document.getElementById("result-card");
+var shuffleZone = document.getElementById("result-shuffle-zone");
+var resultSeason = document.getElementById("result-season");
+var resultTitle = document.getElementById("result-title");
+var resultBadge = document.getElementById("result-badge");
+var commentBlock = document.getElementById("comment-block");
+var commentWho = document.getElementById("comment-who");
+var commentText = document.getElementById("comment-text");
+var telasaBtn = document.getElementById("telasa-btn");
+var shareBtn = document.getElementById("share-btn");
+var historySection = document.getElementById("history-section");
+var historyTitle = document.getElementById("history-title");
+var historyListEl = document.getElementById("history-list");
+
+function updatePoolCount(){
+var pool = buildPool();
+document.getElementById("pool-count").textContent = pool.length;
+return pool;
+}
+
+function showShuffleFace(ep){
+resultEmpty.hidden = true;
+resultNoPool.hidden = true;
+resultCard.hidden = false;
+resultCard.classList.remove("result-in");
+shuffleZone.classList.add("gacha-shuffling");
+resultSeason.textContent = seasonLine(ep);
+resultTitle.textContent = "『" + ep.t + "』";
+resultBadge.hidden = true;
+commentBlock.style.display = "none";
+telasaBtn.hidden = true;
+shareBtn.hidden = true;
+}
+
+function showEntry(entry){
+resultEmpty.hidden = true;
+resultNoPool.hidden = true;
+resultCard.hidden = false;
+shuffleZone.classList.remove("gacha-shuffling");
+resultCard.classList.remove("result-in");
+void resultCard.offsetWidth;
+resultCard.classList.add("result-in");
+resultSeason.textContent = seasonLine(entry.ep);
+resultTitle.textContent = "『" + entry.ep.t + "』";
+resultBadge.hidden = entry.ep.tags.indexOf("newyear") < 0;
+commentBlock.style.display = "";
+commentWho.textContent = entry.comment.who;
+commentText.textContent = entry.comment.text;
+if (entry.ep.url) {
+telasaBtn.href = entry.ep.url;
+telasaBtn.hidden = false;
+} else {
+telasaBtn.hidden = true;
+}
+shareBtn.hidden = false;
+}
+
+function renderHistory(){
+historySection.hidden = historyList.length === 0;
+historyTitle.textContent = "今夜の引き（" + historyList.length + "件）";
+historyListEl.innerHTML = "";
+historyList.forEach(function(h){
+var li = document.createElement("li");
+var btn = document.createElement("button");
+btn.type = "button";
+btn.className = "history-item" + (currentEntry === h? " active": "");
+var seasonTxt = seasonLine(h.ep).replace("　", " ");
+btn.innerHTML = '<span class="history-season">' + esc(seasonTxt) + '</span>' +
+'<span class="history-title">『' + esc(h.ep.t.split("\n")[0]) + '』</span>' +
+'<span class="history-who">' + esc(h.comment.who) + 'のひとこと付き</span>';
+btn.addEventListener("click", function(){
+if (shuffling) return;
+currentEntry = h;
+showEntry(h);
+renderHistory();
+});
+li.appendChild(btn);
+historyListEl.appendChild(li);
+});
+}
+
+function draw(){
+if (shuffling) return;
+var pool = buildPool();
+if (pool.length === 0) {
+resultEmpty.hidden = true;
+resultCard.hidden = true;
+resultNoPool.hidden = false;
+return;
+}
+resultNoPool.hidden = true;
+var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+shuffling = true;
+drawBtn.disabled = true;
+drawBtn.textContent = "捜査中…";
+
+showShuffleFace(pool[Math.floor(Math.random() * pool.length)]);
+
+var finish = function(){
+if (shuffleTimer) { clearInterval(shuffleTimer); shuffleTimer = null;}
+var selected = pool[Math.floor(Math.random() * pool.length)];
+var attempts = 0;
+while (pool.length > 1 && (selected.sn + "-" + selected.en) === lastResult && attempts < 10) {
+selected = pool[Math.floor(Math.random() * pool.length)];
+attempts++;
+}
+lastResult = selected.sn + "-" + selected.en;
+var comment = charaComment(selected, historyList.length + 1);
+var entry = { ep: selected, comment: comment};
+currentEntry = entry;
+historyList.unshift(entry);
+showEntry(entry);
+renderHistory();
+shuffling = false;
+drawBtn.disabled = false;
+drawBtn.textContent = "もう1回、事件を引く！";
+};
+
+if (reduced) {
+finishTimer = setTimeout(finish, 60);
+} else {
+shuffleTimer = setInterval(function(){
+showShuffleFace(pool[Math.floor(Math.random() * pool.length)]);
+}, 70);
+finishTimer = setTimeout(finish, 950);
+}
+}
+
+drawBtn.addEventListener("click", draw);
+document.getElementById("partner-select").addEventListener("change", updatePoolCount);
+document.getElementById("season-select").addEventListener("change", updatePoolCount);
+document.getElementById("clear-btn").addEventListener("click", function(){
+historyList = [];
+currentEntry = null;
+resultCard.hidden = true;
+resultNoPool.hidden = true;
+resultEmpty.hidden = false;
+drawBtn.textContent = "事件を引く！";
+renderHistory();
+});
+shareBtn.addEventListener("click", function(){
+if (!currentEntry) return;
+var ep = currentEntry.ep;
+var text = encodeURIComponent("\n\n" + ep.sn + " 第 " + ep.en + " 話\n『" + ep.t + "』を引き当てました！\n\n#相棒ランダムガチャ #相棒 #aibou \n");
+var url = encodeURIComponent("https://tumiki2ttm.github.io/aibou-random/");
+window.open("https://twitter.com/intent/tweet?text=" + text + "&url=" + url, "_blank");
+});
+
+// 初期表示：総話数と対象件数
+(function(){
+var savedPartner = document.getElementById("partner-select").value;
+var savedSeason = document.getElementById("season-select").value;
+document.getElementById("partner-select").value = "all";
+document.getElementById("season-select").value = "all";
+var total = buildPool().length;
+document.getElementById("total-count").textContent = total;
+document.getElementById("partner-select").value = savedPartner;
+document.getElementById("season-select").value = savedSeason;
+updatePoolCount();
+})();
+</script>
 </body>
 </html>
