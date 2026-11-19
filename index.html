@@ -6,6 +6,9 @@
 <meta name="color-scheme" content="light dark" />
 <link rel="icon" href="data:," />
 <title>相棒ランダムガチャ</title>
+<script>
+(function(){try{var t=localStorage.getItem("aibou-random-theme");if(t==="dark"||t==="light"){document.documentElement.setAttribute("data-theme",t);}}catch(e){}})();
+</script>
 <style>
 :root{
 color-scheme: light dark;
@@ -22,8 +25,25 @@ color-scheme: light dark;
 --red:#b02a30;
 --radius:10px;
 }
+:root[data-theme="light"]{
+color-scheme: light;
+}
+:root[data-theme="dark"]{
+color-scheme: dark;
+--bg:#0d1520;
+--surface:#16222f;
+--surface-2:#1e2f42;
+--text:#e9e5da;
+--dim:#9aa7b4;
+--border:#31445a;
+--navy:#0a1220;
+--navy-2:#1e3a5f;
+--gold:#c9a227;
+--gold-bright:#e9c766;
+--red:#e0656a;
+}
 @media (prefers-color-scheme: dark){
-:root{
+:root:not([data-theme="light"]){
 --bg:#0d1520;
 --surface:#16222f;
 --surface-2:#1e2f42;
@@ -59,6 +79,26 @@ margin:0 -16px;
 padding:28px 20px 24px;
 border-bottom:4px solid var(--gold);
 }
+.masthead-top{
+display:flex;
+justify-content:space-between;
+align-items:flex-start;
+gap:12px;
+}
+.theme-btn{
+flex-shrink:0;
+min-height:32px;
+padding:5px 11px;
+font-size:12px;
+font-weight:700;
+color:#f2eee3;
+background:rgba(255,255,255,.10);
+border:1px solid rgba(233,199,102,.45);
+border-radius:999px;
+cursor:pointer;
+white-space:nowrap;
+}
+.theme-btn:hover{ background:rgba(255,255,255,.18);}
 .lead{ font-size:14px; line-height:1.7; color:var(--gold-bright); margin:0; letter-spacing:.06em;}
 h1{
 font-family:"Hiragino Mincho ProN","Yu Mincho",serif;
@@ -89,6 +129,60 @@ cursor:pointer;
 .pool-count{ font-size:14px; color:var(--dim); margin:12px 0 0;}
 .pool-count b{ color:var(--red); font-size:16px;}
 
+.toggle-group{
+margin-top:16px;
+border-top:1px solid var(--border);
+padding-top:12px;
+display:flex;
+flex-direction:column;
+gap:10px;
+}
+.card label.toggle-row{
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:12px;
+margin:0;
+cursor:pointer;
+font-weight:700;
+font-size:14px;
+padding:4px 0;
+}
+.toggle-label{ display:flex; flex-direction:column; gap:2px;}
+.toggle-label small{ font-size:12px; font-weight:400; color:var(--dim);}
+.switch{
+position:relative;
+display:inline-block;
+width:46px;
+height:26px;
+flex-shrink:0;
+}
+.switch input{ opacity:0; width:0; height:0; position:absolute;}
+.slider{
+position:absolute;
+inset:0;
+background:var(--border);
+border-radius:999px;
+transition:background .2s ease;
+}
+.slider::before{
+content:"";
+position:absolute;
+width:20px;
+height:20px;
+left:3px;
+top:3px;
+background:#fff;
+border-radius:50%;
+transition:transform .2s ease;
+box-shadow:0 1px 3px rgba(0,0,0,.25);
+}
+.switch input:checked + .slider{ background:var(--navy-2);}
+:root[data-theme="dark"] .switch input:checked + .slider{ background:var(--gold);}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .switch input:checked + .slider{ background:var(--gold);}}
+.switch input:checked + .slider::before{ transform:translateX(20px);}
+.switch input:focus-visible + .slider{ outline:2px solid var(--gold); outline-offset:2px;}
+
 .draw-btn{
 margin-top:20px;
 width:100%;
@@ -103,8 +197,9 @@ border-radius:var(--radius);
 cursor:pointer;
 transition:transform.08s ease, opacity.2s ease;
 }
+:root[data-theme="light"] .draw-btn{ background:var(--navy);}
 @media (prefers-color-scheme: light){
-.draw-btn{ background:var(--navy);}
+:root:not([data-theme="dark"]) .draw-btn{ background:var(--navy);}
 }
 .draw-btn:active{ transform:scale(.98);}
 .draw-btn:disabled{ opacity:.65; cursor:default;}
@@ -127,8 +222,12 @@ color:var(--dim);
 font-size:15px;
 line-height:1.8;
 }
+.ep-head{ display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;}
+.ep-count{ font-size:12px; font-weight:700; color:var(--dim); background:var(--surface-2); border:1px solid var(--border); border-radius:999px; padding:2px 10px; white-space:nowrap;}
+.reset-count-btn{ margin-top:8px; background:none; border:1px solid var(--border); color:var(--dim); border-radius:6px; padding:4px 10px; font-size:12px; cursor:pointer;}
 .ep-season{ font-size:16px; font-weight:700; color:var(--navy-2); margin:0;}
-@media (prefers-color-scheme: dark){.ep-season{ color:var(--gold-bright);}}
+:root[data-theme="dark"] .ep-season{ color:var(--gold-bright);}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .ep-season{ color:var(--gold-bright);}}
 .ep-title{
 font-size:24px;
 line-height:1.45;
@@ -239,7 +338,8 @@ color:var(--text);
 }
 .history-item.active{ border-color:var(--red); background:var(--surface-2);}
 .history-season{ font-size:14px; font-weight:700; color:var(--navy-2);}
-@media (prefers-color-scheme: dark){.history-season{ color:var(--gold-bright);}}
+:root[data-theme="dark"] .history-season{ color:var(--gold-bright);}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .history-season{ color:var(--gold-bright);}}
 .history-title{
 display:block;
 margin-top:2px;
@@ -273,7 +373,10 @@ color:var(--dim);
 <body>
 <main class="wrap">
 <div class="masthead">
+<div class="masthead-top">
 <p class="lead">特命係が、今夜の事件を1件指名します</p>
+<button type="button" id="theme-btn" class="theme-btn" aria-label="表示モードを切り替え">🌙 ダーク</button>
+</div>
 <h1>相棒ランダムガチャ</h1>
 <p class="sub">Preシーズンからシーズン25 第5話まで、全<b id="total-count">473</b>話が対象。当たった回の相棒や登場人物が、そのまま結果にひとこと添えます。条件で絞り込みもできます。</p>
 </div>
@@ -340,7 +443,24 @@ color:var(--dim);
 <option value="シーズン23">シーズン23</option>
 <option value="シーズン24">シーズン24</option>
 <option value="シーズン25">シーズン25</option>
+<option value="劇場版">劇場版（全6作）</option>
+<option value="劇場版（I〜IV）">劇場版（I〜IV・4作）</option>
+<option value="劇場版スピンオフ">劇場版スピンオフ（2作）</option>
+<option value="裏相棒">裏相棒（全8話）</option>
+<option value="裏相棒2">裏相棒2（全4話）</option>
+<option value="裏相棒3">裏相棒3（全5話）</option>
 </select>
+
+<div class="toggle-group">
+<label class="toggle-row" for="include-movies">
+<span class="toggle-label">劇場版を含める<small>劇場版I〜IV・米沢守の事件簿・X DAY（全6作）</small></span>
+<span class="switch"><input type="checkbox" id="include-movies" /><span class="slider"></span></span>
+</label>
+<label class="toggle-row" for="include-ura">
+<span class="toggle-label">裏相棒を含める<small>裏相棒・裏相棒2・裏相棒3（全17話）</small></span>
+<span class="switch"><input type="checkbox" id="include-ura" /><span class="slider"></span></span>
+</label>
+</div>
 
 <p class="pool-count" aria-live="polite">現在の対象：<b id="pool-count">-</b> 件</p>
 </section>
@@ -357,7 +477,7 @@ color:var(--dim);
 </div>
 <div class="result-card" id="result-card" hidden>
 <div id="result-shuffle-zone">
-<p class="ep-season" id="result-season"></p>
+<div class="ep-head"><p class="ep-season" id="result-season"></p><span class="ep-count" id="result-count" hidden></span></div>
 <p class="ep-title" id="result-title"></p>
 <span class="badge-newyear" id="result-badge" hidden>元旦スペシャル</span>
 </div>
@@ -386,12 +506,13 @@ color:var(--dim);
 <li>直前に出た回は、候補が2件以上ある場合に最大10回まで引き直して重複を避けます。</li>
 <li>履歴は新しい順に並び、タップするとその回の結果と登場人物のひとことを再表示します。</li>
 <li>端末の「視差効果を減らす／アニメーションを減らす」設定時は、シャッフルを省略して即時表示します。</li>
+<li>同じ回を引いた回数はお使いのブラウザに保存されます。<br><button type="button" class="reset-count-btn" id="reset-count-btn">回数記録をリセット</button></li>
 <li>ひとことの話者は、当たった回の時代の相棒を中心に、その回に登場する人物から選ばれます。</li>
 </ul>
 </details>
 
 <footer>
-<p>（※映画、特別編（TELASA限定は含む）、裏相棒は含みません）<br />※シーズン25 第5話までが入っています</p>
+<p>（※特別編（TELASA限定含む）を対象とし、劇場版・裏相棒は上のスイッチでオン／オフできます）<br />※シーズン25 第5話までが入っています</p>
 <p>※このサイトはファンサイトであり、公式とは無関係の非公式サイトです</p>
 </footer>
 </main>
@@ -426,7 +547,38 @@ const d = [
     { p: "k5", n: "相棒 sideX", url: "https://www.telasa.jp/series/11923", episodes: ["相棒 sideX(sideA/sideB)"] },
     { p: "k5", n: "シーズン23", url: "https://www.telasa.jp/series/14998", episodes: ["警察官A\n〜要人暗殺の罠!姿なき首謀者", "警察官A\n〜逆転殺人!真犯人は二人いる!!", "楽園", "2つの顔", "幽霊ホテル", "薔薇と髭の夜明け", "復讐者は笑わない", "瞳の中のあなた", "最後の一日", "雨やどり", "33人の亀山薫", "細かいことが気になる患者", "レジリエンス", "中園照生の受難", "キャスリング", "花は咲く場所を選ばない", "盗まれた死体", "怪物と聖剣", "怪物と聖剣\n〜決戦"] },
     { p: "k5", n: "シーズン24", url: "https://www.telasa.jp/series/15993", episodes: ["死して償え\n～疑惑の殺人？人間国宝の闇", "死して償え\n～白骨は語る！右京の奇策", "警察官B", "みんな彼女を好きになる", "昭和100年", "ティーロワイヤル", "息子", "梟は夜に飛ぶ", "カフカの手紙", "フィナーレ", "老人と寧々", "特調係 陣川公平", "信用できない語手", "薔薇と髭の告発", "他人の顔", "町一番の嫌われ者", "惡の芽", "ドミノ", "暗闇の鬼"] },
-    { p: "mix", n: "シーズン25", url: "https://www.telasa.jp/series/16932", episodes: ["PMクライシス\n〜総理の秘密と密約の罠", "PMクライシス\n〜幻の犯人と総理の告白", "裁かれたい殺人", "メドゥーサの首", "ハルシネーション"] }
+    { p: "mix", n: "シーズン25", url: "https://www.telasa.jp/series/16932", episodes: ["PMクライシス\n〜総理の秘密と密約の罠", "PMクライシス\n〜幻の犯人と総理の告白", "裁かれたい殺人", "メドゥーサの首", "ハルシネーション"] },
+    { kind: "movie", p: "movie", n: "劇場版", episodes: [
+        { ep: 1, p: "k1", sub: "劇場版（I〜IV）", t: "相棒 -劇場版- 絶体絶命！42.195km 東京ビッグシティマラソン", url: "https://www.telasa.jp/videos/172472", tags: ["kameyama_all", "kameyama_1", "onoda", "yonezawa", "kakuta", "okochi", "hinako"] },
+        { ep: 2, p: "k1", sub: "劇場版スピンオフ", sn: "劇場版スピンオフ", t: "相棒シリーズ 鑑識・米沢守の事件簿", url: "https://www.telasa.jp/videos/172463", tags: ["kameyama_all", "kameyama_1", "yonezawa", "kakuta", "okochi"] },
+        { ep: 3, p: "kb", sub: "劇場版（I〜IV）", t: "相棒 -劇場版II- 警視庁占拠！特命係の一番長い夜", url: "https://www.telasa.jp/videos/172465", tags: ["kanbe_all", "kanbe_2", "onoda", "yonezawa", "kakuta", "okochi"] },
+        { ep: 4, p: "kb", sub: "劇場版スピンオフ", sn: "劇場版スピンオフ", t: "相棒シリーズ X DAY", url: "https://www.telasa.jp/videos/172464", tags: ["kanbe_all", "kanbe_2", "yonezawa", "kakuta", "okochi", "hinako"] },
+        { ep: 5, p: "ka", sub: "劇場版（I〜IV）", t: "相棒 -劇場版III- 巨大密室！特命係 絶海の孤島へ", url: "https://www.telasa.jp/videos/172470", tags: ["kai", "kanbe_all", "kanbe_2", "yonezawa", "kakuta", "okochi"] },
+        { ep: 6, p: "kg", sub: "劇場版（I〜IV）", t: "相棒 -劇場版IV- 首都クライシス 人質は50万人！特命係 最後の決断", url: "https://www.telasa.jp/videos/172466", tags: ["kaburagi", "kanbe_all", "kanbe_2", "kakuta", "okochi", "yashiro", "kusakabe", "kinugasa", "aoki"] }
+    ] },
+    { kind: "ura", p: "ura", n: "裏相棒", episodes: [
+        { ep: 1, t: "第一夜 茶色の小瓶", tags: ["yonezawa"] },
+        { ep: 2, t: "第二夜 『花の里』奇譚", tags: ["yonezawa"] },
+        { ep: 3, t: "第三夜 踊る大発毛腺", tags: ["yonezawa"] },
+        { ep: 4, t: "第四夜 張り込み", tags: ["yonezawa"] },
+        { ep: 5, t: "第五夜 マジックミラー", tags: ["yonezawa"] },
+        { ep: 6, t: "第六夜 伊丹の足の下", tags: ["yonezawa"] },
+        { ep: 7, t: "第七夜 続・『花の里』奇譚", tags: ["yonezawa"] },
+        { ep: 8, t: "最終夜 恋するイタミン", tags: ["yonezawa"] }
+    ] },
+    { kind: "ura", p: "ura", n: "裏相棒2", episodes: [
+        { ep: 1, t: "第一夜 宿直の夜", tags: [] },
+        { ep: 2, t: "第二夜 致命的なミス", tags: ["yonezawa"] },
+        { ep: 3, t: "第三夜 驚愕の事実", tags: ["yonezawa", "kakuta"] },
+        { ep: 4, t: "最終夜 鑑識ショッピング", tags: ["yonezawa"] }
+    ] },
+    { kind: "ura", p: "ura", n: "裏相棒3", episodes: [
+        { ep: 1, t: "第一話 理想の刑事", tags: [] },
+        { ep: 2, t: "第二話 パレード", tags: ["kakuta"] },
+        { ep: 3, t: "第三話 国際犯罪組織", tags: ["kakuta"] },
+        { ep: 4, t: "第四話 再会の時", tags: ["kakuta"] },
+        { ep: 5, t: "第五話 運命", tags: ["kakuta"] }
+    ] }
 ];
 
 // ===== 登場人物のひとこと =====
@@ -484,7 +636,7 @@ miura: { name: "三浦 信輔",
 normal: ["三浦だ。おい伊丹、芹沢、お前らも余計な口を挟むな。今夜はこれで行こう。", "ふむ……この事件か。昔を思い出すな。じっくり観ていくといい。", "捜査一課も色々あったが、この一件は心に残る回だな。", "特命係のやり方は相変わらずだが……まあ、真実には辿り着くはずだ。", "おいおい、懐かしい事件を引き当てたもんだな。ゆっくり観ていってくれ。"]
 },
 okochi: { name: "大河内 春樹",
-normal: ["……ボリボリ……今夜はこの一件を監察……いや、鑑賞ですか。", "職務に私情は挟まない主義ですが……この事件は、見応えがありますね。", "警視庁警務部首席監察官・大河内です。今夜はこのエピソードを精査してください。", "……ピルケースを開ける回数が増えそうな事件ですね。しっかりご覧なさい。", "特命係の行動には常に疑問を持っていますが……この結果には、納得せざるを得ません。"]
+normal: ["……ボリボリ……今夜はこの一件を監察……いや、鑑賞ですか。", "職務に私情は挟まない主義ですが……この事件は、見応えがありますね。", "警視庁警務部首席監察官・大河内です。今夜はこのエピソードを精査してください。", "……ピルケースを開ける回数が増えそうな事件ですね。しっかりご覧下さい。", "特命係の行動には常に疑問を持っていますが……この結果には、納得せざるを得ません。"]
 },
 kakuta: { name: "角田 六郎",
 normal: ["よっ、暇か？……おっ、今夜はこの事件か！俺もコーヒー淹れて一緒に観ようかねぇ。", "組織犯罪対策五課…じゃない、今は薬物銃器対策課の角田だ！おい杉下ぁ、今夜の事件、なかなか面白そうじゃないの！", "暇だから覗きに来たら、いい回引いてるじゃないの！ゆっくり楽しんでってよ。", "油売りに来たらちょうどいい事件引いてるねぇ。パンダのカップで一杯やりながら観なよ。", "ちょいと杉下ぁ、組対の仕事も手伝ってほしいくらいだけど……まあ今夜はこの事件をじっくり観な！"]
@@ -522,6 +674,15 @@ return "kameyama";
 function isFinaleTitle(title){ return /最後|最終|別離|卒業|ラスト/.test(title);}
 
 function charaComment(ep, drawCount){
+if (ep.kind === "ura") {
+  var uraWeighted = ["itami", "itami", "serizawa", "serizawa"];
+  if (ep.sn === "裏相棒" || ep.sn === "裏相棒2") uraWeighted.push("miura", "miura");
+  if (ep.tags.indexOf("yonezawa") >= 0) uraWeighted.push("yonezawa", "yonezawa");
+  if (ep.tags.indexOf("kakuta") >= 0) uraWeighted.push("kakuta", "kakuta");
+  var uKey = uraWeighted[Math.floor(Math.random() * uraWeighted.length)];
+  var uSp = SPEAKERS[uKey];
+  return { who: uSp.name, text: pickFrom(uSp.normal) };
+}
 var partner = eraPartner(ep);
 var isNY = ep.tags.indexOf("newyear") >= 0;
 var hour = new Date().getHours();
@@ -611,17 +772,34 @@ return { who: sp.name, text: text };
 function buildPool(){
 var sel = document.getElementById("partner-select").value;
 var seasonSel = document.getElementById("season-select").value;
+var incMoviesEl = document.getElementById("include-movies");
+var incUraEl = document.getElementById("include-ura");
+var incMovies = incMoviesEl ? incMoviesEl.checked : false;
+var incUra = incUraEl ? incUraEl.checked : false;
 var pool = [];
 d.forEach(function(season){
 if (!season.episodes || season.episodes.length === 0) return;
-if (seasonSel!== "all" && season.n!== seasonSel) return;
+if (season.kind === "movie" && !incMovies) return;
+if (season.kind === "ura" && !incUra) return;
+if (seasonSel !== "all") {
+  if (seasonSel === "劇場版（I〜IV）" || seasonSel === "劇場版スピンオフ") {
+    if (season.kind !== "movie") return;
+  } else if (season.n !== seasonSel) {
+    return;
+  }
+}
 var sNum = parseInt(season.n.replace("シーズン", ""), 10) || 0;
 season.episodes.forEach(function(item, index){
 if (item === "") return;
+if ((seasonSel === "劇場版（I〜IV）" || seasonSel === "劇場版スピンオフ") && item.sub !== seasonSel) return;
 var epNum = (typeof item === "object")? item.ep: index + 1;
 var title = (typeof item === "object")? item.t: item;
-var tags = [];
+var itemP = (typeof item === "object" && item.p) ? item.p : season.p;
+var itemSn = (typeof item === "object" && item.sn) ? item.sn : season.n;
+var itemUrl = (typeof item === "object" && item.url) ? item.url : (season.url || "");
+var tags = (typeof item === "object" && item.tags) ? item.tags.slice() : [];
 
+if (season.kind !== "movie" && season.kind !== "ura") {
 if (season.p === "k1") tags.push("kameyama_all", "kameyama_1");
 if (season.p === "k5") tags.push("kameyama_all", "kameyama_5");
 if (season.p === "kb") tags.push("kanbe_all", "kanbe_2");
@@ -656,7 +834,7 @@ if ((season.n === "Preシーズン" && epNum >= 2) || (sNum >= 1 && sNum <= 14) 
 var kL = {"シーズン15":[1,10,11,18],"シーズン16":[1,2,6,10,12,13,20],"シーズン17":[1,2,4,10,20],"シーズン18":[1,2,11],"シーズン19":[1,2,19,20],"シーズン20":[1,2,19,20],"シーズン21":[1,2,11,20,21],"シーズン22":[1,2,10,19,20],"シーズン23":[1,2,9,18,19],"シーズン24":[1,2,10,19],"シーズン25":[1]};
 if ((kL[season.n] || []).indexOf(epNum) >= 0) tags.push("kinugasa");
 
-var hL = {"シーズン16":[20],"シーズン18":[1,2,12,20],"シーズン19":[1,11],"シーズン20":[9,11,20],"シーズン21":[1,2,4,5,11,18,20,21],"シーズン22":[2,10,11,12,15,19,20],"シーズン23":[1,2,3,8,18,19],"シーズン24":[1,2,3,5,6,8,10,13,14,18,19],"シーズン25":[2,5]};
+var hL = {"シーズン16":[20],"シーズン18":[1,2,12,20],"シーズン19":[1,11],"シーズン20":[9,11,20],"シーズン21":[1,2,4,5,11,18,20,21],"シーズン22":[2,10,11,12,15,19,20],"シーズン23":[1,2,3,8,18,19],"シーズン24":[1,2,3,5,6,8,10,13,14,18,19],"シーズン25":[1,2,5]};
 if ((hL[season.n] || []).indexOf(epNum) >= 0) tags.push("haji");
 
 if ((sNum === 4 && epNum === 19) || (sNum === 6 && (epNum === 11 || epNum === 12)) || (sNum === 10 && epNum >= 12) || (sNum >= 11 && sNum <= 16) || (sNum === 17 && epNum <= 19)) tags.push("sachiko");
@@ -684,9 +862,10 @@ if ((onodaL[season.n] || []).indexOf(epNum) >= 0) tags.push("onoda");
 
 var kanbeGuest = {"シーズン15":[13,14],"シーズン17":[10],"シーズン21":[20,21]};
 if ((kanbeGuest[season.n] || []).indexOf(epNum) >= 0) tags.push("kanbe_all", "kanbe_2");
+}
 
 if (sel === "all" || tags.indexOf(sel) >= 0) {
-pool.push({ p: season.p, sn: season.n, url: season.url || "", en: epNum, t: title, tags: tags});
+pool.push({ kind: season.kind || "tv", p: itemP, sn: itemSn, url: itemUrl, en: epNum, t: title, tags: tags});
 }
 });
 });
@@ -694,8 +873,27 @@ return pool;
 }
 
 function seasonLine(ep){
+if (ep.kind === "movie" || ep.kind === "ura") return ep.sn;
 if (ep.sn.indexOf("オリジナル") >= 0 || ep.sn.indexOf("sideX") >= 0) return ep.sn;
 return ep.sn + "　第 " + ep.en + " 話";
+}
+function epKey(ep){ return ep.sn + "-" + ep.en; }
+function loadCounts(){
+try {
+var raw = localStorage.getItem("aibou-random-counts");
+return raw ? JSON.parse(raw) : {};
+} catch(e) { return {}; }
+}
+function bumpCount(ep){
+var counts = loadCounts();
+var k = epKey(ep);
+counts[k] = (counts[k] || 0) + 1;
+try { localStorage.setItem("aibou-random-counts", JSON.stringify(counts)); } catch(e) {}
+return counts[k];
+}
+function getCount(ep){
+var counts = loadCounts();
+return counts[epKey(ep)] || 0;
 }
 function esc(s){
 return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -715,6 +913,7 @@ var resultNoPool = document.getElementById("result-nopool");
 var resultCard = document.getElementById("result-card");
 var shuffleZone = document.getElementById("result-shuffle-zone");
 var resultSeason = document.getElementById("result-season");
+var resultCount = document.getElementById("result-count");
 var resultTitle = document.getElementById("result-title");
 var resultBadge = document.getElementById("result-badge");
 var commentBlock = document.getElementById("comment-block");
@@ -741,6 +940,7 @@ shuffleZone.classList.add("gacha-shuffling");
 resultSeason.textContent = seasonLine(ep);
 resultTitle.textContent = "『" + ep.t + "』";
 resultBadge.hidden = true;
+resultCount.hidden = true;
 commentBlock.style.display = "none";
 telasaBtn.hidden = true;
 shareBtn.hidden = true;
@@ -757,6 +957,13 @@ resultCard.classList.add("result-in");
 resultSeason.textContent = seasonLine(entry.ep);
 resultTitle.textContent = "『" + entry.ep.t + "』";
 resultBadge.hidden = entry.ep.tags.indexOf("newyear") < 0;
+var c = getCount(entry.ep);
+if (c > 0) {
+resultCount.textContent = c + "回目";
+resultCount.hidden = false;
+} else {
+resultCount.hidden = true;
+}
 commentBlock.style.display = "";
 commentWho.textContent = entry.comment.who;
 commentText.textContent = entry.comment.text;
@@ -819,6 +1026,7 @@ selected = pool[Math.floor(Math.random() * pool.length)];
 attempts++;
 }
 lastResult = selected.sn + "-" + selected.en;
+bumpCount(selected);
 var comment = charaComment(selected, historyList.length + 1);
 var entry = { ep: selected, comment: comment};
 currentEntry = entry;
@@ -842,7 +1050,40 @@ finishTimer = setTimeout(finish, 950);
 
 drawBtn.addEventListener("click", draw);
 document.getElementById("partner-select").addEventListener("change", updatePoolCount);
-document.getElementById("season-select").addEventListener("change", updatePoolCount);
+document.getElementById("season-select").addEventListener("change", function(){
+var val = this.value;
+var mEl = document.getElementById("include-movies");
+var uEl = document.getElementById("include-ura");
+if (val === "劇場版" || val === "劇場版（I〜IV）" || val === "劇場版スピンオフ") {
+  mEl.checked = true;
+  uEl.checked = false;
+} else if (val === "裏相棒" || val === "裏相棒2" || val === "裏相棒3") {
+  uEl.checked = true;
+  mEl.checked = false;
+} else {
+  mEl.checked = false;
+  uEl.checked = false;
+}
+updatePoolCount();
+});
+function syncExtraSeasonOptions(){
+var incM = document.getElementById("include-movies").checked;
+var incU = document.getElementById("include-ura").checked;
+var ss = document.getElementById("season-select");
+if (!incM && (ss.value === "劇場版" || ss.value === "劇場版（I〜IV）" || ss.value === "劇場版スピンオフ")) ss.value = "all";
+if (!incU && (ss.value === "裏相棒" || ss.value === "裏相棒2" || ss.value === "裏相棒3")) ss.value = "all";
+updatePoolCount();
+}
+document.getElementById("include-movies").addEventListener("change", syncExtraSeasonOptions);
+document.getElementById("include-ura").addEventListener("change", syncExtraSeasonOptions);
+var resetCountBtn = document.getElementById("reset-count-btn");
+if (resetCountBtn) {
+resetCountBtn.addEventListener("click", function(){
+if (!confirm("これまで引いた回数の記録をすべてリセットしますか？")) return;
+try { localStorage.removeItem("aibou-random-counts"); } catch(e) {}
+if (currentEntry) showEntry(currentEntry);
+});
+}
 document.getElementById("clear-btn").addEventListener("click", function(){
 historyList = [];
 currentEntry = null;
@@ -855,7 +1096,8 @@ renderHistory();
 shareBtn.addEventListener("click", function(){
 if (!currentEntry) return;
 var ep = currentEntry.ep;
-var text = encodeURIComponent("\n\n" + ep.sn + " 第 " + ep.en + " 話\n『" + ep.t + "』を引き当てました！\n\n#相棒ランダムガチャ #相棒 #aibou \n");
+var line = (ep.kind === "movie" || ep.kind === "ura") ? ep.sn : (ep.sn + " 第 " + ep.en + " 話");
+var text = encodeURIComponent("\n\n" + line + "\n『" + ep.t + "』を引き当てました！\n\n#相棒ランダムガチャ #相棒 #aibou \n");
 var url = encodeURIComponent("https://tumiki2ttm.github.io/aibou-random/");
 window.open("https://twitter.com/intent/tweet?text=" + text + "&url=" + url, "_blank");
 });
@@ -871,6 +1113,34 @@ document.getElementById("total-count").textContent = total;
 document.getElementById("partner-select").value = savedPartner;
 document.getElementById("season-select").value = savedSeason;
 updatePoolCount();
+})();
+
+(function(){
+var btn = document.getElementById("theme-btn");
+if (!btn) return;
+var mq = window.matchMedia ? window.matchMedia("(prefers-color-scheme: dark)") : null;
+function currentTheme(){
+var attr = document.documentElement.getAttribute("data-theme");
+if (attr === "dark" || attr === "light") return attr;
+return (mq && mq.matches) ? "dark" : "light";
+}
+function syncBtn(){
+var t = currentTheme();
+btn.textContent = (t === "dark") ? "☀️ ライト" : "🌙 ダーク";
+btn.setAttribute("aria-label", (t === "dark") ? "ライトモードに切り替え" : "ダークモードに切り替え");
+}
+btn.addEventListener("click", function(){
+var next = (currentTheme() === "dark") ? "light" : "dark";
+document.documentElement.setAttribute("data-theme", next);
+try { localStorage.setItem("aibou-random-theme", next); } catch(e) {}
+syncBtn();
+});
+if (mq) {
+var onChange = function(){ syncBtn(); };
+if (mq.addEventListener) mq.addEventListener("change", onChange);
+else if (mq.addListener) mq.addListener(onChange);
+}
+syncBtn();
 })();
 </script>
 </body>
